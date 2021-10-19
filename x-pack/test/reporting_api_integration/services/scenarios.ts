@@ -14,6 +14,7 @@ import { JobParamsCSV } from '../../../plugins/reporting/server/export_types/csv
 import { JobParamsDownloadCSV } from '../../../plugins/reporting/server/export_types/csv_searchsource_immediate/types';
 import { JobParamsPNG } from '../../../plugins/reporting/server/export_types/png/types';
 import { JobParamsPDF } from '../../../plugins/reporting/server/export_types/printable_pdf/types';
+import { ScheduleIntervalSchemaType } from '../../../plugins/reporting/server/lib/tasks/scheduling';
 import { FtrProviderContext } from '../ftr_provider_context';
 
 function removeWhitespace(str: string) {
@@ -25,6 +26,7 @@ export function createScenarios({ getService }: Pick<FtrProviderContext, 'getSer
   const esArchiver = getService('esArchiver');
   const log = getService('log');
   const supertest = getService('supertest');
+  const supertestNoAuth = getService('supertestWithoutAuth');
   const esSupertest = getService('esSupertest');
   const kibanaServer = getService('kibanaServer');
   const supertestWithoutAuth = getService('supertestWithoutAuth');
@@ -101,6 +103,11 @@ export function createScenarios({ getService }: Pick<FtrProviderContext, 'getSer
     });
   };
 
+  const getTestReportingUserAuth = () => ({
+    username: 'reporting_user',
+    password: 'reporting_user-password',
+  });
+
   const createTestReportingUser = async () => {
     await security.user.create('reporting_user', {
       password: 'reporting_user-password',
@@ -156,6 +163,35 @@ export function createScenarios({ getService }: Pick<FtrProviderContext, 'getSer
     return body.path;
   };
 
+  const scheduleReport = async (
+    exportType: string,
+    postUrl: string,
+    interval: ScheduleIntervalSchemaType,
+    auth?: { username: string; password: string }
+  ) => {
+    const path = `/api/reporting/schedule/${exportType}`;
+    let response;
+    if (auth) {
+      // non-superuser
+      response = await supertestNoAuth
+        .post(path)
+        .auth(auth.username, auth.password)
+        .set('kbn-xsrf', 'xxx')
+        .send({ post_url: postUrl, interval });
+    } else {
+      // elastic user
+      response = await supertest
+        .post(path)
+        .set('kbn-xsrf', 'xxx')
+        .send({ post_url: postUrl, interval });
+    }
+
+    log.debug('Waiting for Task Manager to refresh...');
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    return response;
+  };
+
   const getCompletedJobOutput = async (downloadReportPath: string) => {
     const response = await supertest.get(downloadReportPath);
     return response.text as unknown;
@@ -170,7 +206,30 @@ export function createScenarios({ getService }: Pick<FtrProviderContext, 'getSer
         .post('/.reporting*/_delete_by_query')
         .send({ query: { match_all: {} } })
         .expect(200);
+      log.info('Deleted all reports');
     });
+  };
+
+  const deleteAllSchedules = async () => {
+    log.debug('ReportingAPI.deleteAllSchedules');
+
+    // ignores 409 errs and keeps retrying
+    await retry.tryForTime(5000, async () => {
+      await esSupertest
+        .post('/.kibana_task_manager/_delete_by_query')
+        .send({
+          query: {
+            match: {
+              'task.taskType': 'report:execute',
+            },
+          },
+        })
+        .expect(200);
+      log.info('Deleted all schedules');
+    });
+
+    log.debug('Waiting for Task Manager to refresh...');
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   };
 
   const checkIlmMigrationStatus = async () => {
@@ -214,6 +273,7 @@ export function createScenarios({ getService }: Pick<FtrProviderContext, 'getSer
     createDataAnalystRole,
     createDataAnalyst,
     createTestReportingUserRole,
+    getTestReportingUserAuth,
     createTestReportingUser,
     downloadCsv,
     generatePdf,
@@ -221,8 +281,10 @@ export function createScenarios({ getService }: Pick<FtrProviderContext, 'getSer
     generateCsv,
     postJob,
     postJobJSON,
+    scheduleReport,
     getCompletedJobOutput,
     deleteAllReports,
+    deleteAllSchedules,
     checkIlmMigrationStatus,
     migrateReportingIndices,
     makeAllReportingIndicesUnmanaged,

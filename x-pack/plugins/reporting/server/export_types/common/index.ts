@@ -26,6 +26,8 @@ export interface ConditionalHeadersConditions {
 }
 
 export interface ConditionalHeaders {
-  headers: Record<string, string>;
+  headers: DeserializedHeaders;
   conditions: ConditionalHeadersConditions;
 }
+
+export type DeserializedHeaders = Record<string, string>;

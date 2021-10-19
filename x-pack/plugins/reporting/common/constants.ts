@@ -100,6 +100,8 @@ export const LICENSE_TYPE_ENTERPRISE = 'enterprise';
 // Routes
 export const API_BASE_URL = '/api/reporting'; // "Generation URL" from share menu
 export const API_BASE_GENERATE = `${API_BASE_URL}/generate`;
+export const BASE_SCHEDULE = `${API_BASE_URL}/schedule`;
+export const BASE_SCHEDULES = `${API_BASE_URL}/schedules`;
 export const API_LIST_URL = `${API_BASE_URL}/jobs`;
 export const API_DIAGNOSE_URL = `${API_BASE_URL}/diagnose`;
 
@@ -123,6 +125,8 @@ export const REPORTING_REDIRECT_LOCATOR_STORE_KEY = '__REPORTING_REDIRECT_LOCATO
 export const getRedirectAppPath = () => {
   return '/app/management/insightsAndAlerting/reporting/r';
 };
+
+export const SCHEDULED_REPORTS_SCOPE = 'scheduled-reports';
 
 // Statuses
 export enum JOB_STATUSES {
