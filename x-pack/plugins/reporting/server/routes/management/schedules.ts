@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import { QueryDslQueryContainer } from '@elastic/elasticsearch/api/types';
+import { QueryDslQueryContainer } from '@elastic/elasticsearch/lib/api/typesWithBodyKey';
 import { schema } from '@kbn/config-schema';
 import { BASE_SCHEDULE, BASE_SCHEDULES, SCHEDULED_REPORTS_SCOPE } from '../../../common/constants';
 import { ReportingCore } from '../../core';

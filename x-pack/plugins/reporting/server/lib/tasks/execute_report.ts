@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import type { UpdateResponse } from '@elastic/elasticsearch/api/types';
+import type { UpdateResponse } from '@elastic/elasticsearch/lib/api/typesWithBodyKey';
 import moment, { Moment } from 'moment';
 import * as Rx from 'rxjs';
 import { timeout } from 'rxjs/operators';
