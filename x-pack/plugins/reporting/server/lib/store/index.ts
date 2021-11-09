@@ -8,7 +8,7 @@
 import { ReportTaskParams, ScheduledReportTaskParams } from '../tasks';
 import { Report } from './report';
 
-export { ReportDocument } from '../../../common/types';
+export type { ReportDocument } from '../../../common/types';
 export { IlmPolicyManager } from './ilm_policy_manager';
 export { Report } from './report';
 export { SavedReport } from './saved_report';

@@ -15,7 +15,7 @@ export const REPORTING_MONITOR_TYPE = 'reports:monitor';
 
 export { ExecuteReportTask } from './execute_report';
 export { MonitorReportsTask } from './monitor_reports';
-export { TaskRunResult };
+export type { TaskRunResult };
 export { ScheduleReportFromJobParams };
 
 // scheduled report

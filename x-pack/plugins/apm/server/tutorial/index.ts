@@ -22,7 +22,7 @@ import apmDataView from './index_pattern.json';
 
 const apmIntro = i18n.translate('xpack.apm.tutorial.introduction', {
   defaultMessage:
-    'Collect in-depth performance metrics and errors from inside your applications.',
+    'Collect performance metrics from your applications with Elastic APM.',
 });
 const moduleName = 'apm';
 
@@ -103,7 +103,6 @@ It allows you to monitor the performance of thousands of applications in real ti
         }
       ),
       euiIconType: 'apmApp',
-      eprPackageOverlap: 'apm',
       integrationBrowserCategories: ['web'],
       artifacts,
       customStatusCheckName: 'apm_fleet_server_status_check',
