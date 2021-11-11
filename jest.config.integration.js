@@ -11,5 +11,4 @@ module.exports = {
   rootDir: '.',
   //roots: ['<rootDir>/src', '<rootDir>/packages'],
   roots: ['<rootDir>/packages/kbn-es'],
-  coverageDirectory: '<rootDir>/target/kibana-coverage/jest-integration',
 };

@@ -21,4 +21,4 @@ echo "--- Combine code coverage in a single report"
 yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.jest.config.js
 
 echo "--- Archive combined jest report"
-tar -czf target/kibana-coverage/kibana-coverage.tar.gz target/kibana-coverage/jest-combined
+tar -czf target/kibana-coverage/kibana-jest-coverage.tar.gz target/kibana-coverage/jest-combined && rm -R target/kibana-coverage/jest-combined
