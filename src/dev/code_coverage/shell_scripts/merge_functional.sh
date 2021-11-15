@@ -15,8 +15,7 @@ cd "$coverageBasePath/kibana"
 echo "### bootstrap"
 yarn kbn bootstrap
 echo "### Merge coverage reports"
-yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
-
+pwd
 echo "### Copy 'target' to ${checkoutDir}"
 rsync -ahSD --ignore-errors --force --delete --stats target "$checkoutDir/"
 

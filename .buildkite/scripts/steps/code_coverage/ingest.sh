@@ -9,20 +9,24 @@ is_test_execution_step
 .buildkite/scripts/bootstrap.sh
 
 # download coverage arctifacts
-buildkite-agent artifact download kibana-default.tar.gz . --build "${KIBANA_BUILD_ID:-$BUILDKITE_BUILD_ID}"
-# process HTML Links
-.buildkite/scripts/steps/code_coverage/ingest/prokLinks.sh
-# collect VCS Info
-.buildkite/scripts/steps/code_coverage/ingest/collectVcsInfo.sh
-# merge coverage reports
-. src/dev/code_coverage/shell_scripts/extract_archives.sh
-. src/dev/code_coverage/shell_scripts/merge_functional.sh
-. src/dev/code_coverage/shell_scripts/copy_jest_report.sh
-# zip functional combined report
-tar -czf kibana-functional-coverage.tar.gz target/kibana-coverage/functional-combined/*
+buildkite-agent artifact download "target/kibana-coverage/kibana-jest-coverage.tar.gz" . --build "${KIBANA_BUILD_ID:-$BUILDKITE_BUILD_ID}"
+buildkite-agent artifact download target/kibana-coverage/functional/merge/* . --build "${KIBANA_BUILD_ID:-$BUILDKITE_BUILD_ID}"
+ls -la
+# export COVERAGE_TEMP_DIR=
+# yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
+# # process HTML Links
+# .buildkite/scripts/steps/code_coverage/ingest/prokLinks.sh
+# # collect VCS Info
+# .buildkite/scripts/steps/code_coverage/ingest/collectVcsInfo.sh
+# # merge coverage reports
+# . src/dev/code_coverage/shell_scripts/extract_archives.sh
+# . src/dev/code_coverage/shell_scripts/merge_functional.sh
+# . src/dev/code_coverage/shell_scripts/copy_jest_report.sh
+# # zip functional combined report
+# tar -czf kibana-functional-coverage.tar.gz target/kibana-coverage/functional-combined/*
 
-ls -laR target/kibana-coverage/
-buildkite-agent artifact upload 'kibana-functional-coverage.tar.gz'
+# ls -laR target/kibana-coverage/
+# buildkite-agent artifact upload 'kibana-functional-coverage.tar.gz'
 # upload coverage static site
 #.buildkite/scripts/steps/code_coverage/ingest/uploadStaticSite.sh
 #ingest results to Kibana stats cluster

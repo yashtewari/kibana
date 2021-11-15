@@ -28,7 +28,7 @@ yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional_mer
 
 #mkdir -p ../kibana/target/kibana-coverage/functional/merge
 #mv target/kibana-coverage/functional/merge/coverage-final.json "../kibana/target/kibana-coverage/functional/merge/oss-${CI_GROUP}-coverage.json" || echo "copying coverage file failed"
-mv target/kibana-coverage/functional/merge/coverage-final.json "target/kibana-coverage/functional/merge/oss-${CI_GROUP}-coverage.json"
+mv target/kibana-coverage/functional/merge/coverage-final.json "target/kibana-coverage/functional/merge/xpack-${CI_GROUP}-coverage.json"
 # echo " -> moving junit output, silently fail in case of no report"
 # mkdir -p ../kibana/target/junit
 # mv target/junit/* ../kibana/target/junit/ || echo "copying junit failed"
