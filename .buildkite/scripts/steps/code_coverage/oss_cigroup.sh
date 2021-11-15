@@ -2,7 +2,11 @@
 
 set -euo pipefail
 
-source .buildkite/scripts/steps/functional/common.sh
+source .buildkite/scripts/common/util.sh
+
+is_test_execution_step
+
+.buildkite/scripts/bootstrap.sh
 
 node scripts/build_kibana_platform_plugins.js --no-cache
 
