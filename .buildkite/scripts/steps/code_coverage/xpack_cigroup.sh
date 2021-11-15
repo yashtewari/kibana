@@ -6,6 +6,9 @@ source .buildkite/scripts/common/util.sh
 
 is_test_execution_step
 
+export NODE_OPTIONS=--max_old_space_size=8192
+export CODE_COVERAGE=1
+
 .buildkite/scripts/bootstrap.sh
 
 node scripts/build_kibana_platform_plugins.js --no-cache
@@ -15,8 +18,6 @@ export JOB=kibana-default-ciGroup${CI_GROUP}
 
 echo "--- Default CI Group $CI_GROUP"
 echo " -> Running X-Pack functional tests with code coverage"
-export NODE_OPTIONS=--max_old_space_size=8192
-export CODE_COVERAGE=1
 
 # echo " -> making hard link clones"
 # cd ..
