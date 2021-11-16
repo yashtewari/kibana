@@ -74,7 +74,11 @@ export default function ({ getService, loadTestFile }: FtrProviderContext) {
       loadTestFile(require.resolve('./_metric_chart'));
     });
 
+<<<<<<< HEAD
     describe.skip('visualize ciGroup1', function () {
+=======
+    describes.skip('visualize ciGroup1', function () {
+>>>>>>> 3c94b05fcc5 (skip test suites, revert later)
       this.tags('ciGroup1');
 
       loadTestFile(require.resolve('./_pie_chart'));
