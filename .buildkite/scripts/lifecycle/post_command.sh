@@ -31,8 +31,10 @@ if [[ "$IS_TEST_EXECUTION_STEP" == "true" ]]; then
     buildkite-agent artifact upload 'target/kibana-coverage/jest/**/*'
   fi
 
-  echo "--- Run Failed Test Reporter"
-  node scripts/report_failed_tests --build-url="${BUILDKITE_BUILD_URL}#${BUILDKITE_JOB_ID}" 'target/junit/**/*.xml'
+  if [[ -d 'target/junit' ]]; then
+    echo "--- Run Failed Test Reporter"
+    node scripts/report_failed_tests --build-url="${BUILDKITE_BUILD_URL}#${BUILDKITE_JOB_ID}" 'target/junit/**/*.xml'
+  fi
 
   if [[ -d 'target/test_failures' ]]; then
     buildkite-agent artifact upload 'target/test_failures/**/*'
