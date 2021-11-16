@@ -29,7 +29,7 @@ node scripts/functional_tests \
 
 cd "$KIBANA_DIR"
 
-if [[ -d /target/kibana-coverage/functional ]]; then
+if [[ -d "$KIBANA_DIR/target/kibana-coverage/functional" ]]; then
   echo "--- Merging code coverage"
   yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional_merge.config.js
   mv target/kibana-coverage/functional/merge/coverage-final.json "target/kibana-coverage/functional/merge/xpack-${CI_GROUP}-coverage.json"
