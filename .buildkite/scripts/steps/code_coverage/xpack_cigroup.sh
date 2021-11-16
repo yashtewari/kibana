@@ -29,9 +29,13 @@ node scripts/functional_tests \
 
 cd "$KIBANA_DIR"
 
-yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional_merge.config.js
-
-mv target/kibana-coverage/functional/merge/coverage-final.json "target/kibana-coverage/functional/merge/xpack-${CI_GROUP}-coverage.json"
+if [[ -d /target/kibana-coverage/functional ]]; then
+  echo "--- Merging code coverage"
+  yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional_merge.config.js
+  mv target/kibana-coverage/functional/merge/coverage-final.json "target/kibana-coverage/functional/merge/xpack-${CI_GROUP}-coverage.json"
+else
+  echo "--- Code coverage not found"
+fi
 
 # echo " -> moving junit output, silently fail in case of no report"
 # mkdir -p ../../kibana/target/junit

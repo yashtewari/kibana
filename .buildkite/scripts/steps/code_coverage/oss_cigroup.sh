@@ -24,11 +24,16 @@ node scripts/functional_tests \
   --include-tag "ciGroup$CI_GROUP" \
   --exclude-tag "skipCoverage" || true
 
-yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional_merge.config.js
+if [[ -d /target/kibana-coverage/functional ]]; then
+  echo "--- Merging code coverage"
+  yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional_merge.config.js
+  mv target/kibana-coverage/functional/merge/coverage-final.json "target/kibana-coverage/functional/merge/oss-${CI_GROUP}-coverage.json"
+else
+  echo "--- Code coverage not found"
+fi
 
 #mkdir -p ../kibana/target/kibana-coverage/functional/merge
 #mv target/kibana-coverage/functional/merge/coverage-final.json "../kibana/target/kibana-coverage/functional/merge/oss-${CI_GROUP}-coverage.json" || echo "copying coverage file failed"
-mv target/kibana-coverage/functional/merge/coverage-final.json "target/kibana-coverage/functional/merge/oss-${CI_GROUP}-coverage.json"
 # echo " -> moving junit output, silently fail in case of no report"
 # mkdir -p ../kibana/target/junit
 # mv target/junit/* ../kibana/target/junit/ || echo "copying junit failed"
