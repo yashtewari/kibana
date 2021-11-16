@@ -35,7 +35,7 @@ export default function ({ getService, loadTestFile }: FtrProviderContext) {
   describe('dashboard app', function () {
     // This has to be first since the other tests create some embeddables as side affects and our counting assumes
     // a fresh index.
-    describe('using current data', function () {
+    describe.skip('using current data', function () {
       this.tags('ciGroup2');
       before(loadCurrentData);
       after(unloadCurrentData);
@@ -64,7 +64,7 @@ export default function ({ getService, loadTestFile }: FtrProviderContext) {
       loadTestFile(require.resolve('./dashboard_query_bar'));
     });
 
-    describe('using current data', function () {
+    describe.skip('using current data', function () {
       this.tags('ciGroup3');
       before(loadCurrentData);
       after(unloadCurrentData);
@@ -93,12 +93,12 @@ export default function ({ getService, loadTestFile }: FtrProviderContext) {
       after(unloadLogstash);
 
       loadTestFile(require.resolve('./dashboard_time_picker'));
-      loadTestFile(require.resolve('./bwc_shared_urls'));
-      loadTestFile(require.resolve('./panel_replacing'));
-      loadTestFile(require.resolve('./panel_cloning'));
-      loadTestFile(require.resolve('./copy_panel_to'));
-      loadTestFile(require.resolve('./panel_context_menu'));
-      loadTestFile(require.resolve('./dashboard_state'));
+      // loadTestFile(require.resolve('./bwc_shared_urls'));
+      // loadTestFile(require.resolve('./panel_replacing'));
+      // loadTestFile(require.resolve('./panel_cloning'));
+      // loadTestFile(require.resolve('./copy_panel_to'));
+      // loadTestFile(require.resolve('./panel_context_menu'));
+      // loadTestFile(require.resolve('./dashboard_state'));
     });
 
     describe('using legacy data', function () {
@@ -107,9 +107,9 @@ export default function ({ getService, loadTestFile }: FtrProviderContext) {
       after(unloadLogstash);
 
       loadTestFile(require.resolve('./dashboard_save'));
-      loadTestFile(require.resolve('./dashboard_time'));
-      loadTestFile(require.resolve('./dashboard_listing'));
-      loadTestFile(require.resolve('./dashboard_clone'));
+      // loadTestFile(require.resolve('./dashboard_time'));
+      // loadTestFile(require.resolve('./dashboard_listing'));
+      // loadTestFile(require.resolve('./dashboard_clone'));
     });
 
     // TODO: Remove when vislib is removed

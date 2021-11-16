@@ -61,24 +61,24 @@ export default function ({ loadTestFile, getService }) {
     describe('', async function () {
       this.tags('ciGroup9');
       loadTestFile(require.resolve('./documents_source'));
-      loadTestFile(require.resolve('./blended_vector_layer'));
-      loadTestFile(require.resolve('./vector_styling'));
-      loadTestFile(require.resolve('./saved_object_management'));
-      loadTestFile(require.resolve('./sample_data'));
-      loadTestFile(require.resolve('./auto_fit_to_bounds'));
-      loadTestFile(require.resolve('./layer_visibility'));
-      loadTestFile(require.resolve('./feature_controls/maps_security'));
-      loadTestFile(require.resolve('./feature_controls/maps_spaces'));
-      loadTestFile(require.resolve('./full_screen_mode'));
+      // loadTestFile(require.resolve('./blended_vector_layer'));
+      // loadTestFile(require.resolve('./vector_styling'));
+      // loadTestFile(require.resolve('./saved_object_management'));
+      // loadTestFile(require.resolve('./sample_data'));
+      // loadTestFile(require.resolve('./auto_fit_to_bounds'));
+      // loadTestFile(require.resolve('./layer_visibility'));
+      // loadTestFile(require.resolve('./feature_controls/maps_security'));
+      // loadTestFile(require.resolve('./feature_controls/maps_spaces'));
+      // loadTestFile(require.resolve('./full_screen_mode'));
     });
 
     describe('', function () {
       this.tags('ciGroup22');
       loadTestFile(require.resolve('./es_geo_grid_source'));
-      loadTestFile(require.resolve('./embeddable'));
+      // loadTestFile(require.resolve('./embeddable'));
     });
 
-    describe('', function () {
+    describe.skip('', function () {
       this.tags('ciGroup10');
       loadTestFile(require.resolve('./es_pew_pew_source'));
       loadTestFile(require.resolve('./joins'));

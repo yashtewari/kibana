@@ -17,7 +17,7 @@ export default function ({
   const browser = getService('browser');
   const PageObjects = getPageObjects(['common', 'header']);
 
-  describe('ui actions explorer', function () {
+  describe.skip('ui actions explorer', function () {
     this.tags('ciGroup2');
     before(async () => {
       await browser.setWindowSize(1300, 900);

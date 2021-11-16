@@ -8,7 +8,7 @@
 import { FtrProviderContext } from '../ftr_provider_context';
 
 export default function ({ loadTestFile }: FtrProviderContext) {
-  describe('Kibana embedded', function () {
+  describe.skip('Kibana embedded', function () {
     this.tags('ciGroup2');
     loadTestFile(require.resolve('./iframe_embedded'));
   });

@@ -11,7 +11,7 @@ export default function ({ loadTestFile, getService }: FtrProviderContext) {
   const kibanaServer = getService('kibanaServer');
   const esArchiver = getService('esArchiver');
 
-  describe('search sessions management', function () {
+  describe.skip('search sessions management', function () {
     this.tags('ciGroup3');
 
     before(async () => {

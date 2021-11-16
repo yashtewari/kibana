@@ -14,7 +14,7 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
   const testSubjects = getService('testSubjects');
   const PageObjects = getPageObjects(['common']);
 
-  describe('Partial Results Example', function () {
+  describe.skip('Partial Results Example', function () {
     before(async () => {
       this.tags('ciGroup2');
       await PageObjects.common.navigateToApp('partialResultsExample');

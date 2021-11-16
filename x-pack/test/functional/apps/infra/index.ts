@@ -8,7 +8,7 @@
 import { FtrProviderContext } from '../../ftr_provider_context';
 
 export default ({ loadTestFile }: FtrProviderContext) => {
-  describe('InfraOps App', function () {
+  describe.skip('InfraOps App', function () {
     this.tags('ciGroup7');
     loadTestFile(require.resolve('./feature_controls'));
     describe('Metrics UI', function () {

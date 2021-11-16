@@ -25,7 +25,7 @@ export default function ({ getService, loadTestFile }: FtrProviderContext) {
     });
 
     // TODO: Remove when vislib is removed
-    describe('new charts library visualize ciGroup7', function () {
+    describe.skip('new charts library visualize ciGroup7', function () {
       this.tags('ciGroup7');
 
       before(async () => {
@@ -53,7 +53,7 @@ export default function ({ getService, loadTestFile }: FtrProviderContext) {
       loadTestFile(require.resolve('./_timelion'));
     });
 
-    describe('visualize ciGroup9', function () {
+    describe.skip('visualize ciGroup9', function () {
       this.tags('ciGroup9');
 
       loadTestFile(require.resolve('./_embedding_chart'));
@@ -63,7 +63,7 @@ export default function ({ getService, loadTestFile }: FtrProviderContext) {
       loadTestFile(require.resolve('./_chart_types'));
     });
 
-    describe('visualize ciGroup10', function () {
+    describe.skip('visualize ciGroup10', function () {
       this.tags('ciGroup10');
 
       loadTestFile(require.resolve('./_inspector'));
@@ -74,7 +74,7 @@ export default function ({ getService, loadTestFile }: FtrProviderContext) {
       loadTestFile(require.resolve('./_metric_chart'));
     });
 
-    describe('visualize ciGroup1', function () {
+    describes.skip('visualize ciGroup1', function () {
       this.tags('ciGroup1');
 
       loadTestFile(require.resolve('./_pie_chart'));
@@ -85,7 +85,7 @@ export default function ({ getService, loadTestFile }: FtrProviderContext) {
       loadTestFile(require.resolve('./_add_to_dashboard.ts'));
     });
 
-    describe('visualize ciGroup8', function () {
+    describe.skip('visualize ciGroup8', function () {
       this.tags('ciGroup8');
 
       loadTestFile(require.resolve('./_tsvb_chart'));
@@ -95,10 +95,10 @@ export default function ({ getService, loadTestFile }: FtrProviderContext) {
       this.tags('ciGroup11');
 
       loadTestFile(require.resolve('./_tag_cloud'));
-      loadTestFile(require.resolve('./_tsvb_time_series'));
-      loadTestFile(require.resolve('./_tsvb_markdown'));
-      loadTestFile(require.resolve('./_tsvb_table'));
-      loadTestFile(require.resolve('./_vega_chart'));
+      // loadTestFile(require.resolve('./_tsvb_time_series'));
+      // loadTestFile(require.resolve('./_tsvb_markdown'));
+      // loadTestFile(require.resolve('./_tsvb_table'));
+      // loadTestFile(require.resolve('./_vega_chart'));
     });
   });
 }

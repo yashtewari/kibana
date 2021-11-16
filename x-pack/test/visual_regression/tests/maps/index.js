@@ -12,7 +12,7 @@ export default function ({ loadTestFile, getService }) {
   const log = getService('log');
   const supertest = getService('supertest');
 
-  describe('maps app visual regression', function () {
+  describe.skip('maps app visual regression', function () {
     before(async () => {
       await esArchiver.loadIfNeeded('x-pack/test/functional/es_archives/logstash_functional');
       await kibanaServer.importExport.load(

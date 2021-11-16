@@ -15,7 +15,7 @@ export default function ({ getService, getPageObjects, loadTestFile }: FtrProvid
   const testSubjects = getService('testSubjects');
   const PageObjects = getPageObjects(['common']);
 
-  describe('routing examples', function () {
+  describe.skip('routing examples', function () {
     before(async () => {
       this.tags('ciGroup2');
       await PageObjects.common.navigateToApp('routingExample');

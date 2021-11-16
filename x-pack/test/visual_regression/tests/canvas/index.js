@@ -13,7 +13,7 @@ export default function ({ loadTestFile, getService }) {
   const esArchiver = getService('esArchiver');
   const browser = getService('browser');
 
-  describe('canvas app visual regression', function () {
+  describe.skip('canvas app visual regression', function () {
     before(async () => {
       await esArchiver.loadIfNeeded('x-pack/test/functional/es_archives/logstash_functional');
       await esArchiver.load('x-pack/test/functional/es_archives/canvas/default');

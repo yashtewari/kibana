@@ -12,7 +12,7 @@ export default function ({ getService, loadTestFile }: PluginFunctionalProviderC
   const esArchiver = getService('esArchiver');
   const kibanaServer = getService('kibanaServer');
 
-  describe('search examples', function () {
+  describe.skip('search examples', function () {
     this.tags('ciGroup13');
     before(async () => {
       await esArchiver.emptyKibanaIndex();

@@ -12,7 +12,7 @@ export default function ({ loadTestFile, getService, getPageObjects }: FtrProvid
   const esArchiver = getService('esArchiver');
   const PageObjects = getPageObjects(['common']);
 
-  describe('Search session sharing', function () {
+  describe.skip('Search session sharing', function () {
     this.tags('ciGroup3');
 
     before(async () => {

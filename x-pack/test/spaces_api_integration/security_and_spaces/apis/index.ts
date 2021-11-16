@@ -13,7 +13,7 @@ export default function ({ loadTestFile, getService }: FtrProviderContext) {
   const es = getService('es');
   const supertest = getService('supertest');
 
-  describe('spaces api with security', function () {
+  describe.skip('spaces api with security', function () {
     this.tags('ciGroup8');
 
     before(async () => {

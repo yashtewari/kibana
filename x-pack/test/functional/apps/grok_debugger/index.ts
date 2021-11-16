@@ -8,7 +8,7 @@
 import { FtrProviderContext } from '../../ftr_provider_context';
 
 export default ({ loadTestFile }: FtrProviderContext) => {
-  describe('Grok Debugger App', function () {
+  describe.skip('Grok Debugger App', function () {
     this.tags('ciGroup13');
     loadTestFile(require.resolve('./home_page'));
   });

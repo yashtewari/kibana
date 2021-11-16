@@ -9,7 +9,7 @@ import { FtrProviderContext } from '../ftr_provider_context';
 
 // eslint-disable-next-line import/no-default-export
 export default function ({ getService, loadTestFile }: FtrProviderContext) {
-  describe('Reporting APIs', function () {
+  describe.skip('Reporting APIs', function () {
     this.tags('ciGroup2');
 
     before(async () => {

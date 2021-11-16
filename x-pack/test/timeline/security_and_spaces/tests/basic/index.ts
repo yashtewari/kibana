@@ -13,7 +13,7 @@ import {
 
 // eslint-disable-next-line import/no-default-export
 export default ({ loadTestFile, getService }: FtrProviderContext): void => {
-  describe('timeline security and spaces enabled: basic', function () {
+  describe.skip('timeline security and spaces enabled: basic', function () {
     // Fastest ciGroup for the moment.
     this.tags('ciGroup5');
 

@@ -13,7 +13,7 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
   const testSubjects = getService('testSubjects');
   const PageObjects = getPageObjects(['common']);
 
-  describe('status page', function () {
+  describe.skip('status page', function () {
     this.tags('ciGroup1');
 
     beforeEach(async () => {

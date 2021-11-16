@@ -18,7 +18,7 @@ export default function ({
   const es = getService('es');
   const PageObjects = getPageObjects(['common', 'header', 'settings']);
 
-  describe('index pattern field editor example', function () {
+  describe.skip('index pattern field editor example', function () {
     this.tags('ciGroup2');
     before(async () => {
       await browser.setWindowSize(1300, 900);

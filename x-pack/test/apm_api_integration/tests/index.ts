@@ -13,7 +13,7 @@ const cwd = path.join(__dirname);
 export default function apmApiIntegrationTests({ getService, loadTestFile }: FtrProviderContext) {
   const registry = getService('registry');
 
-  describe('APM API tests', function () {
+  describe.skip('APM API tests', function () {
     this.tags('ciGroup1');
 
     const tests = glob.sync('**/*.spec.ts', { cwd });

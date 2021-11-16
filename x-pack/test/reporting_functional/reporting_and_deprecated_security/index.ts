@@ -42,7 +42,7 @@ export default function (context: FtrProviderContext) {
     });
   };
 
-  describe('Reporting Functional Tests with Deprecated Security configuration enabled', function () {
+  describe.skip('Reporting Functional Tests with Deprecated Security configuration enabled', function () {
     this.tags('ciGroup2');
 
     before(async () => {

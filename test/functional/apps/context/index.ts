@@ -14,7 +14,7 @@ export default function ({ getService, getPageObjects, loadTestFile }: FtrProvid
   const PageObjects = getPageObjects(['common']);
   const kibanaServer = getService('kibanaServer');
 
-  describe('context app', function () {
+  describe.skip('context app', function () {
     this.tags('ciGroup1');
 
     before(async () => {

@@ -48,10 +48,10 @@ export default function ({ getService, loadTestFile }: FtrProviderContext) {
       describe('', function () {
         this.tags('ciGroup15');
         loadTestFile(require.resolve('./permissions'));
-        loadTestFile(require.resolve('./pages'));
-        loadTestFile(require.resolve('./data_visualizer'));
-        loadTestFile(require.resolve('./data_frame_analytics'));
-        loadTestFile(require.resolve('./model_management'));
+        // loadTestFile(require.resolve('./pages'));
+        // loadTestFile(require.resolve('./data_visualizer'));
+        // loadTestFile(require.resolve('./data_frame_analytics'));
+        // loadTestFile(require.resolve('./model_management'));
       });
 
       describe('', function () {
@@ -96,9 +96,9 @@ export default function ({ getService, loadTestFile }: FtrProviderContext) {
       });
 
       loadTestFile(require.resolve('./feature_controls'));
-      loadTestFile(require.resolve('./settings'));
-      loadTestFile(require.resolve('./embeddables'));
-      loadTestFile(require.resolve('./stack_management_jobs'));
+      // loadTestFile(require.resolve('./settings'));
+      // loadTestFile(require.resolve('./embeddables'));
+      // loadTestFile(require.resolve('./stack_management_jobs'));
     });
   });
 }

@@ -10,7 +10,7 @@ import { FtrProviderContext } from '../../ftr_provider_context';
 export default function (providerContext: FtrProviderContext) {
   const { loadTestFile } = providerContext;
 
-  describe('endpoint', function () {
+  describe.skip('endpoint', function () {
     this.tags('ciGroup7');
     loadTestFile(require.resolve('./agents_page'));
   });
