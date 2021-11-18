@@ -8,16 +8,23 @@ is_test_execution_step
 
 .buildkite/scripts/bootstrap.sh
 
+node scripts/build_kibana_platform_plugins.js --no-cache
+
 # download coverage arctifacts
-buildkite-agent artifact download "target/kibana-coverage/kibana-jest-coverage.tar.gz" . --build "${KIBANA_BUILD_ID:-$BUILDKITE_BUILD_ID}"
+buildkite-agent artifact download "kibana-jest-coverage.tar.gz" . --build "${KIBANA_BUILD_ID:-$BUILDKITE_BUILD_ID}"
 buildkite-agent artifact download target/kibana-coverage/functional/merge/* . --build "${KIBANA_BUILD_ID:-$BUILDKITE_BUILD_ID}"
-ls -la
+echo "### Functional: coverage json files"
+ls -la target/kibana-coverage/functional/merge
 echo "### Functional: replacing path in json files"
 COVERAGE_TEMP_DIR=$KIBANA_DIR/target/kibana-coverage/functional/merge
 sed -i "s|/opt/local-ssd/buildkite/builds/.*/elastic/kibana-code-coverage-main/kibana|${KIBANA_DIR}|g" $COVERAGE_TEMP_DIR/*.json
 
 echo "### Functional: generate combined report"
 yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
+
+tar -czf kibana-functional-ciGroup-coverage.tar.gz $COVERAGE_TEMP_DIR && rm -rf $COVERAGE_TEMP_DIR
+tar -czf kibana-functional-coverage.tar.gz target/kibana-coverage/functional-combined && rm -rf target/kibana-coverage/functional-combined
+rm -rf $COVERAGE_TEMP_DIR
 
 # export COVERAGE_TEMP_DIR=
 # yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
