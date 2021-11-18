@@ -8,11 +8,10 @@
 
 const defaultExclude = require('@istanbuljs/schema/default-exclude');
 const extraExclude = ['data/optimize/**', 'src/core/server/**', '**/{test, types}/**/*'];
-const path = require('path');
 
 module.exports = {
   'temp-dir': process.env.COVERAGE_TEMP_DIR
-    ? path.resolve(process.env.COVERAGE_TEMP_DIR, 'functional')
+    ? process.env.COVERAGE_TEMP_DIR
     : 'target/kibana-coverage/functional',
   'report-dir': 'target/kibana-coverage/functional/merge',
   reporter: ['json'],

@@ -13,7 +13,8 @@ buildkite-agent artifact download "target/kibana-coverage/kibana-jest-coverage.t
 buildkite-agent artifact download target/kibana-coverage/functional/merge/* . --build "${KIBANA_BUILD_ID:-$BUILDKITE_BUILD_ID}"
 ls -la
 echo "### Functional: replacing path in json files"
-sed -i "s|/opt/local-ssd/buildkite/builds/.*/elastic/kibana-code-coverage-main/kibana|${KIBANA_DIR}|g" $KIBANA_DIR/target/kibana-coverage/functional/merge/*.json
+COVERAGE_TEMP_DIR=$KIBANA_DIR/target/kibana-coverage/functional/merge
+sed -i "s|/opt/local-ssd/buildkite/builds/.*/elastic/kibana-code-coverage-main/kibana|${KIBANA_DIR}|g" $COVERAGE_TEMP_DIR/*.json
 
 echo "### Functional: generate combined report"
 yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
