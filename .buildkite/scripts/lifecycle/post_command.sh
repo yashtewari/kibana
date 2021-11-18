@@ -27,6 +27,7 @@ if [[ "$IS_TEST_EXECUTION_STEP" == "true" ]]; then
   if [[ "$CODE_COVERAGE" == "1" ]]; then
     buildkite-agent artifact upload 'target/kibana-coverage/kibana-jest-coverage.tar.gz'
     buildkite-agent artifact upload 'target/kibana-coverage/functional/merge/*'
+    buildkite-agent artifact upload 'target/kibana-coverage/functional-combined/*'
   else
     buildkite-agent artifact upload 'target/kibana-coverage/jest/**/*'
   fi
