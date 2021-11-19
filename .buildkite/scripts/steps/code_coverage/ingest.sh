@@ -16,7 +16,7 @@ buildkite-agent artifact download target/kibana-coverage/functional/merge/* . --
 echo "### Functional: coverage json files"
 ls -la target/kibana-coverage/functional/merge
 echo "### Functional: replacing path in json files"
-COVERAGE_TEMP_DIR=$KIBANA_DIR/target/kibana-coverage/functional/merge
+export COVERAGE_TEMP_DIR=$KIBANA_DIR/target/kibana-coverage/functional/merge
 echo "COVERAGE_TEMP_DIR path"
 echo $COVERAGE_TEMP_DIR
 CURRENT_PATH=$(pwd)
