@@ -17,6 +17,13 @@ echo "### Functional: coverage json files"
 ls -la target/kibana-coverage/functional/merge
 echo "### Functional: replacing path in json files"
 COVERAGE_TEMP_DIR=$KIBANA_DIR/target/kibana-coverage/functional/merge
+echo "COVERAGE_TEMP_DIR path"
+echo $COVERAGE_TEMP_DIR
+CURRENT_PATH=$(pwd)
+echo "current path"
+echo $CURRENT_PATH
+echo "KIBANA_DIR"
+echo $KIBANA_DIR
 sed -i "s|/opt/local-ssd/buildkite/builds/.*/elastic/kibana-code-coverage-main/kibana|${KIBANA_DIR}|g" $COVERAGE_TEMP_DIR/*.json
 
 echo "### Functional: generate combined report"
