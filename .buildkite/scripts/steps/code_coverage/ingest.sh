@@ -6,6 +6,8 @@ source .buildkite/scripts/common/util.sh
 
 is_test_execution_step
 
+export CODE_COVERAGE=1
+
 .buildkite/scripts/bootstrap.sh
 
 node scripts/build_kibana_platform_plugins.js --no-cache
