@@ -26,8 +26,8 @@ echo "current path"
 echo $CURRENT_PATH
 echo "KIBANA_DIR"
 echo $KIBANA_DIR
-sed -i "s|/opt/local-ssd/buildkite/builds/.*/elastic/kibana-code-coverage-main/kibana|${KIBANA_DIR}|g" $COVERAGE_TEMP_DIR/*.json
 
+sed -i "s|/opt/local-ssd/buildkite/builds/kb-cigroup-4d-[[:xdigit:]]\{16\}/elastic/kibana-code-coverage-main/kibana|${KIBANA_DIR}|g" $COVERAGE_TEMP_DIR/*.json
 echo "### Functional: generate combined report"
 yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
 
