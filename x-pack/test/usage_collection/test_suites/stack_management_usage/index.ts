@@ -10,6 +10,7 @@ import { FtrProviderContext } from '../../ftr_provider_context';
 import { stackManagementSchema } from '../../../../../src/plugins/kibana_usage_collection/server/collectors/management/schema';
 
 export default function ({ getService, getPageObjects }: FtrProviderContext) {
+  // FLAKY: https://github.com/elastic/kibana/issues/119038
   describe.skip('Stack Management', function () {
     this.tags('ciGroup1');
     const { common } = getPageObjects(['common']);
