@@ -14,6 +14,7 @@ while read -r config; do
   if [ "$((i % JOB_COUNT))" -eq "$JOB" ]; then
     echo "--- $ node scripts/jest --config $config"
     node --max-old-space-size=14336 ./node_modules/.bin/jest --coverage --coverageReporters json || true
+    mv target/kibana-coverage/jest/coverage-final.json "./target/kibana-coverage/jest/coverage-$(date +%s%3N).json"
     lastCode=$?
 
     if [ $lastCode -ne 0 ]; then
