@@ -6,13 +6,14 @@
  * Side Public License, v 1.
  */
 
+const path = require('path');
 const defaultExclude = require('@istanbuljs/schema/default-exclude');
 const extraExclude = ['data/optimize/**', 'src/core/server/**', '**/{test, types}/**/*'];
 
 module.exports = {
   'temp-dir': process.env.COVERAGE_TEMP_DIR
-    ? process.env.COVERAGE_TEMP_DIR
-    : 'target/kibana-coverage/functional/merge',
+    ? path.resolve(process.env.COVERAGE_TEMP_DIR, 'functional')
+    : 'target/kibana-coverage/functional',
   'report-dir': 'target/kibana-coverage/functional-combined',
   reporter: ['html', 'json-summary'],
   exclude: extraExclude.concat(defaultExclude),

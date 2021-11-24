@@ -20,8 +20,9 @@ node scripts/functional_tests \
 
 if [[ -d "$KIBANA_DIR/target/kibana-coverage/functional" ]]; then
   echo "--- Merging code coverage for CI Group $CI_GROUP"
-  yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional_merge.config.js
-  mv target/kibana-coverage/functional/merge/coverage-final.json "target/kibana-coverage/functional/merge/oss-${CI_GROUP}-coverage.json"
+  yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js --reporter json
+  rm -rf target/kibana-coverage/functional/*
+  mv target/kibana-coverage/functional-combined/coverage-final.json "target/kibana-coverage/functional/oss-${CI_GROUP}-coverage.json"
 else
   echo "--- Code coverage not found"
 fi
