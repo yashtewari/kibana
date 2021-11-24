@@ -26,3 +26,6 @@ is_test_execution_step
 echo '--- Jest coverage'
 
 .buildkite/scripts/steps/code_coverage/jest_parallel.sh
+
+echo "--- Merging code coverage"
+yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.jest_merge.config.js

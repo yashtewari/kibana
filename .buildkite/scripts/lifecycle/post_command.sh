@@ -29,7 +29,7 @@ if [[ "$IS_TEST_EXECUTION_STEP" == "true" ]]; then
     buildkite-agent artifact upload 'kibana-functional-coverage.tar.gz'
     buildkite-agent artifact upload 'kibana-functional-ciGroup-coverage.tar.gz'
     buildkite-agent artifact upload 'target/kibana-coverage/functional/merge/*'
-    buildkite-agent artifact upload 'target/kibana-coverage/jest/**/*'
+    buildkite-agent artifact upload 'target/kibana-coverage/jest/merge/*'
   else
     buildkite-agent artifact upload 'target/kibana-coverage/jest/**/*'
   fi
