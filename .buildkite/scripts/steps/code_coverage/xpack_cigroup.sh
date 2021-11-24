@@ -15,12 +15,6 @@ echo " -> Running X-Pack functional tests with code coverage"
 export NODE_OPTIONS=--max_old_space_size=8192
 export CODE_COVERAGE=1
 
-# echo " -> making hard link clones"
-# cd ..
-# cp -RlP kibana "kibana${CI_GROUP}"
-# cd "kibana${CI_GROUP}/x-pack"
-
-# echo " -> running tests from the clone folder"
 cd "$XPACK_DIR"
 
 node scripts/functional_tests \
@@ -30,19 +24,11 @@ node scripts/functional_tests \
 cd "$KIBANA_DIR"
 
 if [[ -d "$KIBANA_DIR/target/kibana-coverage/functional" ]]; then
-  echo "--- Merging code coverage"
+  echo "--- Merging code coverage for CI Group $CI_GROUP"
   yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional_merge.config.js
   mv target/kibana-coverage/functional/merge/coverage-final.json "target/kibana-coverage/functional/merge/xpack-${CI_GROUP}-coverage.json"
 else
   echo "--- Code coverage not found"
 fi
-
-# echo " -> moving junit output, silently fail in case of no report"
-# mkdir -p ../../kibana/target/junit
-# mv ../target/junit/* ../../kibana/target/junit/ || echo "copying junit failed"
-
-# echo " -> copying screenshots and html for failures"
-# cp -r test/functional/screenshots/* ../../kibana/x-pack/test/functional/screenshots/ || echo "copying screenshots failed"
-# cp -r test/functional/failure_debug ../../kibana/x-pack/test/functional/ || echo "copying html failed"
 
 cd "$KIBANA_DIR"
