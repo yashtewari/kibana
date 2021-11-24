@@ -13,7 +13,7 @@ exitCode=0
 while read -r config; do
   if [ "$((i % JOB_COUNT))" -eq "$JOB" ]; then
     echo "--- $ node scripts/jest --config $config --coverage --coverageReporters json --coverageDirectory target/kibana-coverage/jest"
-    node --max-old-space-size=14336 ./node_modules/.bin/jest --config="$config" --coverage --coverageReporters json --coverageDirectory target/kibana-coverage/jest || true
+    node --max-old-space-size=14336 ./node_modules/.bin/jest --runInBand --config="$config" --coverage --coverageReporters json --coverageDirectory target/kibana-coverage/jest || true
     echo "Rename coverage-final.json to avoid overwrite"
     mv target/kibana-coverage/jest/coverage-final.json "./target/kibana-coverage/jest/coverage-$(date +%s%3N).json"
     lastCode=$?
