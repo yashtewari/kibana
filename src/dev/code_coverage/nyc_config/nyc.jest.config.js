@@ -14,4 +14,12 @@ module.exports = {
     : 'target/kibana-coverage/jest',
   'report-dir': 'target/kibana-coverage/jest-combined',
   reporter: ['html', 'json-summary'],
+  collectCoverageFrom: [
+    '**/*.{js,mjs,jsx,ts,tsx}',
+    '!**/{__test__,__snapshots__,__examples__,*mock*,tests,test_helpers,integration_tests,types}/**/*',
+    '!**/*mock*.{ts,tsx}',
+    '!**/*.test.{ts,tsx}',
+    '!**/*.d.ts',
+    '!**/index.{js,ts,tsx}',
+  ],
 };

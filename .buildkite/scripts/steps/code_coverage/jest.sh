@@ -12,6 +12,8 @@ echo '--- Jest coverage'
 
 .buildkite/scripts/steps/code_coverage/jest_parallel.sh
 
+tar -czf kibana-jest-thread-coverage.tar.gz target/kibana-coverage/jest
+
 echo "--- Merging code coverage for a thread"
 yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.jest.config.js --reporter json
 rm -rf target/kibana-coverage/jest/*
