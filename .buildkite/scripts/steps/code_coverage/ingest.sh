@@ -19,7 +19,7 @@ buildkite-agent artifact download target/kibana-coverage/functional/* . --build 
 
 export COVERAGE_TEMP_DIR=$KIBANA_DIR/target/kibana-coverage
 echo "--- Jest: coverage json files stored in $COVERAGE_TEMP_DIR/jest"
-sed -i "s|/opt/local-ssd/buildkite/builds/kb-n2-4-[[:xdigit:]]\{16\}/elastic/kibana-code-coverage-main/kibana|${KIBANA_DIR}|g" $COVERAGE_TEMP_DIR/jest/*.json
+sed -i "s|/opt/local-ssd/buildkite/builds/kb-cigroup-4d-[[:xdigit:]]\{16\}/elastic/kibana-code-coverage-main/kibana|${KIBANA_DIR}|g" $COVERAGE_TEMP_DIR/jest/*.json
 echo "--- Jest: merge json files and generate combined report"
 yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.jest.config.js
 echo "--- Archive combined jest report"
