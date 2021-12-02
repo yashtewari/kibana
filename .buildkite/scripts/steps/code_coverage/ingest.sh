@@ -15,7 +15,7 @@ node scripts/build_kibana_platform_plugins.js --no-cache
 # download coverage arctifacts
 #buildkite-agent artifact download "kibana-jest-coverage.tar.gz" . --build "${KIBANA_BUILD_ID:-$BUILDKITE_BUILD_ID}"
 buildkite-agent artifact download target/kibana-coverage/jest/* . --build "${KIBANA_BUILD_ID:-$BUILDKITE_BUILD_ID}"
-buildkite-agent artifact download target/kibana-coverage/functional/* . --build "${KIBANA_BUILD_ID:-$BUILDKITE_BUILD_ID}"
+#buildkite-agent artifact download target/kibana-coverage/functional/* . --build "${KIBANA_BUILD_ID:-$BUILDKITE_BUILD_ID}"
 
 export COVERAGE_TEMP_DIR=$KIBANA_DIR/target/kibana-coverage
 echo "--- Jest: coverage json files stored in $COVERAGE_TEMP_DIR/jest"
