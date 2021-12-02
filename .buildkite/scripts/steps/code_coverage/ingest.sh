@@ -19,20 +19,20 @@ buildkite-agent artifact download target/kibana-coverage/functional/* . --build 
 
 export COVERAGE_TEMP_DIR=$KIBANA_DIR/target/kibana-coverage
 echo "--- Jest: coverage json files stored in $COVERAGE_TEMP_DIR/jest"
-sed -i -e "s|/opt/local-ssd/buildkite/builds/kb-[[:alnum:]\-]\{20,27\}/elastic/kibana-code-coverage-main/kibana|${KIBANA_DIR}|g" $COVERAGE_TEMP_DIR/jest/*.json
+sed -i "s|/opt/local-ssd/buildkite/builds/kb-[[:alnum:]\-]\{20,27\}/elastic/kibana-code-coverage-main/kibana|${KIBANA_DIR}|g" $COVERAGE_TEMP_DIR/jest/*.json
 echo "--- Jest: merge json files and generate combined report"
 yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.jest.config.js
 echo "--- Archive combined jest report"
 tar -czf kibana-jest-coverage.tar.gz target/kibana-coverage/jest-combined && rm -rf target/kibana-coverage/jest-combined
 
-echo "### Functional: coverage json files stored in $COVERAGE_TEMP_DIR"
-sed -i "s|/opt/local-ssd/buildkite/builds/kb-cigroup-4d-[[:xdigit:]]\{16\}/elastic/kibana-code-coverage-main/kibana|${KIBANA_DIR}|g" $COVERAGE_TEMP_DIR/functional/*.json
-echo "### Functional: merge json files and generate combined report"
-yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
+# echo "### Functional: coverage json files stored in $COVERAGE_TEMP_DIR"
+# sed -i "s|/opt/local-ssd/buildkite/builds/kb-cigroup-4d-[[:xdigit:]]\{16\}/elastic/kibana-code-coverage-main/kibana|${KIBANA_DIR}|g" $COVERAGE_TEMP_DIR/functional/*.json
+# echo "### Functional: merge json files and generate combined report"
+# yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
 
 #tar -czf kibana-functional-ciGroup-coverage.tar.gz $COVERAGE_TEMP_DIR && rm -rf $COVERAGE_TEMP_DIR
-echo "--- Archive combined functional report"
-tar -czf kibana-functional-coverage.tar.gz target/kibana-coverage/functional-combined && rm -rf target/kibana-coverage/functional-combined
+# echo "--- Archive combined functional report"
+# tar -czf kibana-functional-coverage.tar.gz target/kibana-coverage/functional-combined && rm -rf target/kibana-coverage/functional-combined
 
 # # process HTML Links
 # .buildkite/scripts/steps/code_coverage/ingest/prokLinks.sh
