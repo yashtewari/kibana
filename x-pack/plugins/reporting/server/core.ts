@@ -7,8 +7,7 @@
 
 import Hapi from '@hapi/hapi';
 import * as Rx from 'rxjs';
-import { first, map, take } from 'rxjs/operators';
-import { ScreenshotModePluginSetup } from 'src/plugins/screenshot_mode/server';
+import { filter, first, map, switchMap, take } from 'rxjs/operators';
 import {
   BasePath,
   IClusterClient,
@@ -17,17 +16,21 @@ import {
   PluginInitializerContext,
   SavedObjectsClientContract,
   SavedObjectsServiceStart,
+  ServiceStatusLevels,
+  StatusServiceSetup,
   UiSettingsServiceStart,
 } from '../../../../src/core/server';
 import { PluginStart as DataPluginStart } from '../../../../src/plugins/data/server';
 import { PluginSetupContract as FeaturesPluginSetup } from '../../features/server';
 import { LicensingPluginSetup } from '../../licensing/server';
+import type { ScreenshotResult, ScreenshottingStart } from '../../screenshotting/server';
 import { SecurityPluginSetup } from '../../security/server';
 import { DEFAULT_SPACE_ID } from '../../spaces/common/constants';
 import { SpacesPluginSetup } from '../../spaces/server';
 import { TaskManagerSetupContract, TaskManagerStartContract } from '../../task_manager/server';
+import { REPORTING_REDIRECT_LOCATOR_STORE_KEY } from '../common/constants';
+import { durationToNumber } from '../common/schema_utils';
 import { ReportingConfig, ReportingSetup } from './';
-import { HeadlessChromiumDriverFactory } from './browsers/chromium/driver_factory';
 import { ReportingConfigType } from './config';
 import { checkLicense, getExportTypesRegistry, LevelLogger } from './lib';
 import { ReportingStore } from './lib/store';
@@ -37,7 +40,7 @@ import {
   ReportTaskParams,
   ScheduledReportTaskParams,
 } from './lib/tasks';
-import { ReportingPluginRouter } from './types';
+import { ReportingPluginRouter, ScreenshotOptions } from './types';
 
 export interface ReportingInternalSetup {
   basePath: Pick<BasePath, 'set'>;
@@ -47,12 +50,11 @@ export interface ReportingInternalSetup {
   security?: SecurityPluginSetup;
   spaces?: SpacesPluginSetup;
   taskManager: TaskManagerSetupContract;
-  screenshotMode: ScreenshotModePluginSetup;
   logger: LevelLogger;
+  status: StatusServiceSetup;
 }
 
 export interface ReportingInternalStart {
-  browserDriverFactory: HeadlessChromiumDriverFactory;
   store: ReportingStore;
   savedObjects: SavedObjectsServiceStart;
   uiSettings: UiSettingsServiceStart;
@@ -60,6 +62,7 @@ export interface ReportingInternalStart {
   data: DataPluginStart;
   taskManager: TaskManagerStartContract;
   logger: LevelLogger;
+  screenshotting: ScreenshottingStart;
 }
 
 export class ReportingCore {
@@ -116,10 +119,23 @@ export class ReportingCore {
     this.pluginStart$.next(startDeps); // trigger the observer
     this.pluginStartDeps = startDeps; // cache
 
+    await this.assertKibanaIsAvailable();
+
     const { taskManager } = startDeps;
     const { executeTask, monitorTask } = this;
     // enable this instance to generate reports and to monitor for pending reports
     await Promise.all([executeTask.init(taskManager), monitorTask.init(taskManager)]);
+  }
+
+  private async assertKibanaIsAvailable(): Promise<void> {
+    const { status } = this.getPluginSetupDeps();
+
+    await status.overall$
+      .pipe(
+        filter((current) => current.level === ServiceStatusLevels.available),
+        first()
+      )
+      .toPromise();
   }
 
   /*
@@ -242,11 +258,6 @@ export class ReportingCore {
       .toPromise();
   }
 
-  public getEnableScreenshotMode() {
-    const { screenshotMode } = this.getPluginSetupDeps();
-    return screenshotMode.setScreenshotModeEnabled;
-  }
-
   /*
    * Gives synchronous access to the setupDeps
    */
@@ -330,6 +341,35 @@ export class ReportingCore {
   public async getEsClient() {
     const startDeps = await this.getPluginStartDeps();
     return startDeps.esClient;
+  }
+
+  public getScreenshots(options: ScreenshotOptions): Rx.Observable<ScreenshotResult> {
+    return Rx.defer(() => this.getPluginStartDeps()).pipe(
+      switchMap(({ screenshotting }) => {
+        const config = this.getConfig();
+        return screenshotting.getScreenshots({
+          ...options,
+
+          timeouts: {
+            loadDelay: durationToNumber(config.get('capture', 'loadDelay')),
+            openUrl: durationToNumber(config.get('capture', 'timeouts', 'openUrl')),
+            waitForElements: durationToNumber(config.get('capture', 'timeouts', 'waitForElements')),
+            renderComplete: durationToNumber(config.get('capture', 'timeouts', 'renderComplete')),
+          },
+
+          layout: {
+            zoom: config.get('capture', 'zoom'),
+            ...options.layout,
+          },
+
+          urls: options.urls.map((url) =>
+            typeof url === 'string'
+              ? url
+              : [url[0], { [REPORTING_REDIRECT_LOCATOR_STORE_KEY]: url[1] }]
+          ),
+        });
+      })
+    );
   }
 
   public trackReport(reportId: string) {

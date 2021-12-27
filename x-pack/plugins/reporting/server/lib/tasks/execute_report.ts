@@ -19,7 +19,7 @@ import {
   TaskManagerStartContract,
   TaskRunCreatorFunction,
 } from '../../../../task_manager/server';
-import { CancellationToken } from '../../../common';
+import { CancellationToken } from '../../../common/cancellation_token';
 import { SCHEDULED_REPORTS_SCOPE } from '../../../common/constants';
 import { durationToNumber, numberToDuration } from '../../../common/schema_utils';
 import { ReportOutput } from '../../../common/types';
@@ -166,7 +166,6 @@ export class ExecuteReportTask implements ReportingTask {
     const doc: ReportProcessingFields = {
       kibana_id: this.kibanaId,
       kibana_name: this.kibanaName,
-      browser_type: this.config.capture.browser.type,
       attempts: report.attempts + 1,
       max_attempts: maxAttempts,
       started_at: startTime,
