@@ -186,6 +186,7 @@ describe('Handle request to generate', () => {
         "completed_at": undefined,
         "created_by": "testymcgee",
         "index": ".reporting-foo-index-234",
+        "interval": undefined,
         "jobtype": "csv_searchsource",
         "kibana_id": undefined,
         "kibana_name": undefined,
