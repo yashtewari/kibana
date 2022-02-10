@@ -25,7 +25,7 @@ import { durationToNumber, numberToDuration } from '../../../common/schema_utils
 import { ReportOutput } from '../../../common/types';
 import { ReportingConfigType } from '../../config';
 import { BasePayload, ExportTypeDefinition, RunTaskFn } from '../../types';
-import { ReportDocument, reportFromTask, ReportingStore, SavedReport } from '../store';
+import { Report, ReportDocument, reportFromTask, ReportingStore, SavedReport } from '../store';
 import { ReportFailedFields, ReportProcessingFields } from '../store/store';
 import {
   ReportingTask,

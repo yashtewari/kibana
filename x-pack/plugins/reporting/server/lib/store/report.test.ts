@@ -127,7 +127,6 @@ describe('Class Report', () => {
       _index: '.reporting-test-index-12345',
       jobtype: 'test-report',
       created_by: 'created_by_test_string',
-      browser_type: 'browser_type_test_string',
       max_attempts: 50,
       payload: {
         headers: 'payload_test_field',
