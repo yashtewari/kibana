@@ -8,7 +8,6 @@
 import Hapi from '@hapi/hapi';
 import * as Rx from 'rxjs';
 import { filter, first, map, switchMap, take } from 'rxjs/operators';
-import type { FieldFormatsStart } from 'src/plugins/field_formats/server';
 import type {
   BasePath,
   IClusterClient,
@@ -18,15 +17,15 @@ import type {
   SavedObjectsServiceStart,
   StatusServiceSetup,
   UiSettingsServiceStart,
-} from '../../../../src/core/server';
+} from 'src/core/server';
+import type { PluginStart as DataPluginStart } from 'src/plugins/data/server';
+import type { FieldFormatsStart } from 'src/plugins/field_formats/server';
 import { KibanaRequest, ServiceStatusLevels } from '../../../../src/core/server';
-import { PluginStart as DataPluginStart } from '../../../../src/plugins/data/server';
 import type { IEventLogService } from '../../event_log/server';
-import { PluginSetupContract as FeaturesPluginSetup } from '../../features/server';
+import type { PluginSetupContract as FeaturesPluginSetup } from '../../features/server';
 import type { LicensingPluginStart } from '../../licensing/server';
 import type { ScreenshotResult, ScreenshottingStart } from '../../screenshotting/server';
-import type { SecurityPluginStart } from '../../security/server';
-import { SecurityPluginSetup } from '../../security/server';
+import type { SecurityPluginSetup, SecurityPluginStart } from '../../security/server';
 import { DEFAULT_SPACE_ID } from '../../spaces/common/constants';
 import type { SpacesPluginSetup } from '../../spaces/server';
 import type { TaskManagerSetupContract, TaskManagerStartContract } from '../../task_manager/server';
@@ -36,7 +35,7 @@ import type { ReportingConfig, ReportingSetup } from './';
 import { ReportingConfigType } from './config';
 import { checkLicense, getExportTypesRegistry, LevelLogger } from './lib';
 import { reportingEventLoggerFactory } from './lib/event_logger/logger';
-import { ReportingStore, IReport } from './lib/store';
+import type { IReport, ReportingStore } from './lib/store';
 import {
   ExecuteReportTask,
   MonitorReportsTask,
