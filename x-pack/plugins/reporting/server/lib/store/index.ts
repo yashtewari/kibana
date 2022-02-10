@@ -18,3 +18,10 @@ export function reportFromTask(task: ReportTaskParams | ScheduledReportTaskParam
   const reportTask = task as ReportTaskParams;
   return new Report({ ...task, _id: reportTask.id, _index: reportTask.index });
 }
+
+export interface IReport {
+  _id?: string;
+  jobtype: string;
+  created_by: string | false;
+  payload: { browserTimezone: string };
+}

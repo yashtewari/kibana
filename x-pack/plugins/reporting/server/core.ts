@@ -8,32 +8,35 @@
 import Hapi from '@hapi/hapi';
 import * as Rx from 'rxjs';
 import { filter, first, map, switchMap, take } from 'rxjs/operators';
-import {
+import type { FieldFormatsStart } from 'src/plugins/field_formats/server';
+import type {
   BasePath,
   IClusterClient,
-  KibanaRequest,
   PackageInfo,
   PluginInitializerContext,
   SavedObjectsClientContract,
   SavedObjectsServiceStart,
-  ServiceStatusLevels,
   StatusServiceSetup,
   UiSettingsServiceStart,
 } from '../../../../src/core/server';
+import { KibanaRequest, ServiceStatusLevels } from '../../../../src/core/server';
 import { PluginStart as DataPluginStart } from '../../../../src/plugins/data/server';
+import type { IEventLogService } from '../../event_log/server';
 import { PluginSetupContract as FeaturesPluginSetup } from '../../features/server';
-import { LicensingPluginSetup } from '../../licensing/server';
+import type { LicensingPluginStart } from '../../licensing/server';
 import type { ScreenshotResult, ScreenshottingStart } from '../../screenshotting/server';
+import type { SecurityPluginStart } from '../../security/server';
 import { SecurityPluginSetup } from '../../security/server';
 import { DEFAULT_SPACE_ID } from '../../spaces/common/constants';
-import { SpacesPluginSetup } from '../../spaces/server';
-import { TaskManagerSetupContract, TaskManagerStartContract } from '../../task_manager/server';
+import type { SpacesPluginSetup } from '../../spaces/server';
+import type { TaskManagerSetupContract, TaskManagerStartContract } from '../../task_manager/server';
 import { REPORTING_REDIRECT_LOCATOR_STORE_KEY } from '../common/constants';
 import { durationToNumber } from '../common/schema_utils';
-import { ReportingConfig, ReportingSetup } from './';
+import type { ReportingConfig, ReportingSetup } from './';
 import { ReportingConfigType } from './config';
 import { checkLicense, getExportTypesRegistry, LevelLogger } from './lib';
-import { ReportingStore } from './lib/store';
+import { reportingEventLoggerFactory } from './lib/event_logger/logger';
+import { ReportingStore, IReport } from './lib/store';
 import {
   ExecuteReportTask,
   MonitorReportsTask,
@@ -43,10 +46,10 @@ import {
 import { ReportingPluginRouter, ScreenshotOptions } from './types';
 
 export interface ReportingInternalSetup {
+  eventLog: IEventLogService;
   basePath: Pick<BasePath, 'set'>;
   router: ReportingPluginRouter;
   features: FeaturesPluginSetup;
-  licensing: LicensingPluginSetup;
   security?: SecurityPluginSetup;
   spaces?: SpacesPluginSetup;
   taskManager: TaskManagerSetupContract;
@@ -60,11 +63,17 @@ export interface ReportingInternalStart {
   uiSettings: UiSettingsServiceStart;
   esClient: IClusterClient;
   data: DataPluginStart;
-  taskManager: TaskManagerStartContract;
+  fieldFormats: FieldFormatsStart;
+  licensing: LicensingPluginStart;
   logger: LevelLogger;
   screenshotting: ScreenshottingStart;
+  security?: SecurityPluginStart;
+  taskManager: TaskManagerStartContract;
 }
 
+/**
+ * @internal
+ */
 export class ReportingCore {
   private packageInfo: PackageInfo;
   private pluginSetupDeps?: ReportingInternalSetup;
@@ -249,10 +258,12 @@ export class ReportingCore {
   }
 
   public async getLicenseInfo() {
-    const { licensing } = this.getPluginSetupDeps();
-    return await licensing.license$
+    const { license$ } = (await this.getPluginStartDeps()).licensing;
+    const registry = this.getExportTypesRegistry();
+
+    return await license$
       .pipe(
-        map((license) => checkLicense(this.getExportTypesRegistry(), license)),
+        map((license) => checkLicense(registry, license)),
         first()
       )
       .toPromise();
@@ -382,5 +393,10 @@ export class ReportingCore {
 
   public countConcurrentReports(): number {
     return this.executing.size;
+  }
+
+  public getEventLogger(report: IReport, task?: { id: string }) {
+    const ReportingEventLogger = reportingEventLoggerFactory(this.pluginSetupDeps!.eventLog);
+    return new ReportingEventLogger(report, task);
   }
 }
