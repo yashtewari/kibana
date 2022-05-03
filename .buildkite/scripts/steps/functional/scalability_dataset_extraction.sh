@@ -23,6 +23,10 @@ done
 
 # archive json files with traces and upload as build artifacts
 echo "--- Archive jsons and upload as artefact"
-tar -czf scalability_traces.tar.gz output
-buildkite-agent artifact upload "scalability_traces.tar.gz"
-
+#buildkite-agent artifact upload "scalability_traces.tar.gz"
+mkdir "${BUILD_ID}"
+tar -czf "${BUILD_ID}"/scalability_traces.tar.gz output
+buildkite-agent artifact download kibana-default.tar.gz ./"${BUILD_ID}"
+buildkite-agent artifact download kibana-default-plugins.tar.gz ./"${BUILD_ID}"
+ls -la "${BUILD_ID}"
+gsutil cp -r "${BUILD_ID}" gs://kibana-performance/scalability-tests
