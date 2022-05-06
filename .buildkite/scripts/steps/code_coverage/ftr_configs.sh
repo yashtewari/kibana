@@ -1,0 +1,133 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+source .buildkite/scripts/common/util.sh
+
+.buildkite/scripts/bootstrap.sh
+.buildkite/scripts/build_kibana_plugins.sh
+
+is_test_execution_step
+
+export JOB_NUM=$BUILDKITE_PARALLEL_JOB
+export JOB=ftr-configs-${JOB_NUM}
+export CODE_COVERAGE=1
+
+FAILED_CONFIGS_KEY="${BUILDKITE_STEP_ID}${BUILDKITE_PARALLEL_JOB:-0}"
+
+# a FTR failure will result in the script returning an exit code of 10
+exitCode=0
+
+configs="${FTR_CONFIG:-}"
+
+if [[ "$configs" == "" ]]; then
+  echo "--- downloading ftr test run order"
+  buildkite-agent artifact download ftr_run_order.json .
+  configs=$(jq -r '.groups[env.JOB_NUM | tonumber].names | .[]' ftr_run_order.json)
+fi
+
+failedConfigs=""
+results=()
+
+while read -r config; do
+  if [[ ! "$config" ]]; then
+    continue
+  fi
+
+  echo "--- $ node scripts/functional_tests --config $config --exclude-tag ''skipCoverage''"
+  start=$(date +%s)
+
+  # prevent non-zero exit code from breaking the loop
+  set +e
+  NODE_OPTIONS=--max_old_space_size=14336 \
+    ./node_modules/.bin/nyc \
+    --nycrc-path ./src/dev/code_coverage/nyc_config/nyc.server.config.js \
+    node scripts/functional_tests \
+    --config="$config" \
+    --exclude-tag "skipCoverage"
+  lastCode=$?
+  set -e
+
+  dasherize() {
+    withoutExtension=${1%.*}
+    dasherized=$(echo "$withoutExtension" | tr '\/' '\-')
+  }
+  dasherize $config
+
+  serverAndClientSummary="target/kibana-coverage/functional/xpack-${dasherized}-server-coverage.json"
+  functionalSummary="target/kibana-coverage/functional/xpack-${dasherized}-coverage.json"
+
+  # Server side and client side (server and public dirs)
+  if [[ -d "$KIBANA_DIR/target/kibana-coverage/server" ]]; then
+    echo "--- Server and Client side code coverage collected"
+    mkdir -p target/kibana-coverage/functional
+    mv target/kibana-coverage/server/coverage-final.json "$serverAndClientSummary"
+  fi
+
+  # Each browser unload event, creates a new coverage file.
+  # So, we merge them here.
+  if [[ -d "$KIBANA_DIR/target/kibana-coverage/functional" ]]; then
+    echo "--- Merging code coverage for FTR Config: $config"
+    yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js --reporter json
+    rm -rf target/kibana-coverage/functional/*
+    mv target/kibana-coverage/functional-combined/coverage-final.json "$functionalSummary"
+  else
+    echo "--- Code coverage not found"
+  fi
+
+  # Check for empty summary files.
+  empties=()
+  emptyCheck() {
+    echo "### Checking $1"
+    echo $(head -5 $1) | grep -E -i "pct.+Unknown" >/dev/null
+    lastCode=$?
+    if [ $lastCode -eq 0 ]; then
+      echo "  --- Empty Summary File: $1"
+      empties+=($1)
+    fi
+  }
+  emptyCheck $serverAndClientSummary
+  emptyCheck $functionalSummary
+
+  if [[ ${#empties[@]} -ge 2 ]]; then
+    echo "### Empty count = ${#empties[@]}, fail the build"
+  else
+    echo "### Empty count < 2, dont fail the build"
+  fi
+
+  timeSec=$(($(date +%s) - start))
+  if [[ $timeSec -gt 60 ]]; then
+    min=$((timeSec / 60))
+    sec=$((timeSec - (min * 60)))
+    duration="${min}m ${sec}s"
+  else
+    duration="${timeSec}s"
+  fi
+
+  results+=("- $config
+    duration: ${duration}
+    result: ${lastCode}")
+
+  if [ $lastCode -ne 0 ]; then
+    exitCode=10
+    echo "FTR exited with code $lastCode"
+    echo "^^^ +++"
+
+    if [[ "$failedConfigs" ]]; then
+      failedConfigs="${failedConfigs}"$'\n'"$config"
+    else
+      failedConfigs="$config"
+    fi
+  fi
+done <<<"$configs"
+
+if [[ "$failedConfigs" ]]; then
+  buildkite-agent meta-data set "$FAILED_CONFIGS_KEY" "$failedConfigs"
+fi
+
+echo "--- FTR configs complete"
+printf "%s\n" "${results[@]}"
+echo ""
+
+# Force exit 0 to ensure the next build step starts.
+exit 0
