@@ -7,7 +7,9 @@ source .buildkite/scripts/common/util.sh
 export CODE_COVERAGE=1 # Kibana is bootstrapped differently for code coverage
 
 .buildkite/scripts/bootstrap.sh
-.buildkite/scripts/build_kibana_plugins.sh
+
+echo "--- Build Platform Plugins"
+NODE_OPTIONS=--max_old_space_size=14336 node scripts/build_kibana_platform_plugins --no-examples --test-plugins
 
 is_test_execution_step
 
