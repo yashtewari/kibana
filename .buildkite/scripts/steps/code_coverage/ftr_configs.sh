@@ -54,14 +54,11 @@ while read -r config; do
   }
   dasherize $config
 
-  serverAndClientSummary="target/kibana-coverage/functional/xpack-${dasherized}-server-coverage.json"
-  functionalSummary="target/kibana-coverage/functional/xpack-${dasherized}-coverage.json"
-
   # Server side and client side (server and public dirs)
   if [[ -d "$KIBANA_DIR/target/kibana-coverage/server" ]]; then
     echo "--- Server and Client side code coverage collected"
     mkdir -p target/kibana-coverage/functional
-    mv target/kibana-coverage/server/coverage-final.json "$serverAndClientSummary"
+    mv target/kibana-coverage/server/coverage-final.json "target/kibana-coverage/functional/xpack-${dasherized}-server-coverage.json"
   fi
 
   # Each browser unload event, creates a new coverage file.
@@ -70,29 +67,9 @@ while read -r config; do
     echo "--- Merging code coverage for FTR Config: $config"
     yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js --reporter json
     rm -rf target/kibana-coverage/functional/*
-    mv target/kibana-coverage/functional-combined/coverage-final.json "$functionalSummary"
+    mv target/kibana-coverage/functional-combined/coverage-final.json "target/kibana-coverage/functional-combined/xpack-${dasherized}-coverage-final.json"
   else
     echo "--- Code coverage not found"
-  fi
-
-  # Check for empty summary files.
-  empties=()
-  emptyCheck() {
-    echo "### Checking $1"
-    echo $(head -5 $1) | grep -E -i "pct.+Unknown" >/dev/null
-    lastCode=$?
-    if [ $lastCode -eq 0 ]; then
-      echo "  --- Empty Summary File: $1"
-      empties+=($1)
-    fi
-  }
-  emptyCheck $serverAndClientSummary
-  emptyCheck $functionalSummary
-
-  if [[ ${#empties[@]} -ge 2 ]]; then
-    echo "### Empty count = ${#empties[@]}, fail the build"
-  else
-    echo "### Empty count < 2, dont fail the build"
   fi
 
   timeSec=$(($(date +%s) - start))
