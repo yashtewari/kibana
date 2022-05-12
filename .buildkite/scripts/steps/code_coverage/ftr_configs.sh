@@ -4,6 +4,8 @@ set -euo pipefail
 
 source .buildkite/scripts/common/util.sh
 
+export CODE_COVERAGE=1 # Kibana is bootstrapped differently for code coverage
+
 .buildkite/scripts/bootstrap.sh
 .buildkite/scripts/build_kibana_plugins.sh
 
@@ -11,7 +13,6 @@ is_test_execution_step
 
 export JOB_NUM=$BUILDKITE_PARALLEL_JOB
 export JOB=ftr-configs-${JOB_NUM}
-export CODE_COVERAGE=1
 
 FAILED_CONFIGS_KEY="${BUILDKITE_STEP_ID}${BUILDKITE_PARALLEL_JOB:-0}"
 
@@ -54,12 +55,12 @@ while read -r config; do
   }
   dasherize $config
 
-  # Server side and client side (server and public dirs)
-  if [[ -d "$KIBANA_DIR/target/kibana-coverage/server" ]]; then
-    echo "--- Server and Client side code coverage collected"
-    mkdir -p target/kibana-coverage/functional
-    mv target/kibana-coverage/server/coverage-final.json "target/kibana-coverage/functional/xpack-${dasherized}-server-coverage.json"
-  fi
+#  # Server side and client side (server and public dirs)
+#  if [[ -d "$KIBANA_DIR/target/kibana-coverage/server" ]]; then
+#    echo "--- Server and Client side code coverage collected"
+#    mkdir -p target/kibana-coverage/functional
+#    mv target/kibana-coverage/server/coverage-final.json "target/kibana-coverage/functional/xpack-${dasherized}-server-coverage.json"
+#  fi
 
   # Each browser unload event, creates a new coverage file.
   # So, we merge them here.
@@ -69,7 +70,7 @@ while read -r config; do
     rm -rf target/kibana-coverage/functional/*
     mv target/kibana-coverage/functional-combined/coverage-final.json "target/kibana-coverage/functional-combined/xpack-${dasherized}-coverage-final.json"
   else
-    echo "--- Code coverage not found"
+    echo "--- Code coverage not found in: $KIBANA_DIR/target/kibana-coverage/functional"
   fi
 
   timeSec=$(($(date +%s) - start))
