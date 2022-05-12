@@ -57,23 +57,11 @@ while read -r config; do
   }
   dasherize $config
 
-#  # Server side and client side (server and public dirs)
-#  if [[ -d "$KIBANA_DIR/target/kibana-coverage/server" ]]; then
-#    echo "--- Server and Client side code coverage collected"
-#    mkdir -p target/kibana-coverage/functional
-#    mv target/kibana-coverage/server/coverage-final.json "target/kibana-coverage/functional/xpack-${dasherized}-server-coverage.json"
-#  fi
-
-  # Each browser unload event, creates a new coverage file.
-  # So, we merge them here.
   if [[ -d "$KIBANA_DIR/target/kibana-coverage/functional" ]]; then
-    echo "--- Merging code coverage for FTR Config: $config"
-    yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js --reporter json
-    rm -rf target/kibana-coverage/functional/*
-    mv target/kibana-coverage/functional-combined/coverage-final.json \
-      "target/kibana-coverage/functional/${dasherized}-coverage-final.json"
-  else
-    echo "--- Code coverage not found in: $KIBANA_DIR/target/kibana-coverage/functional"
+    echo "--- Server and / or Client side code coverage collected"
+    if [[ -f "target/kibana-coverage/functional/coverage-final.json" ]]; then
+      mv target/kibana-coverage/functional/coverage-final.json "target/kibana-coverage/functional/${dasherized}-server-coverage.json"
+    fi
   fi
 
   timeSec=$(($(date +%s) - start))
@@ -101,6 +89,18 @@ while read -r config; do
     fi
   fi
 done <<<"$configs"
+
+# Each browser unload event, creates a new coverage file.
+# So, we merge them here.
+if [[ -d "$KIBANA_DIR/target/kibana-coverage/functional" ]]; then
+  echo "--- Merging code coverage for FTR Configs"
+  yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js --reporter json
+  rm -rf target/kibana-coverage/functional/*
+  mv target/kibana-coverage/functional-combined/coverage-final.json \
+    "target/kibana-coverage/functional/$(uuid)-coverage-final.json"
+else
+  echo "--- Code coverage not found in: $KIBANA_DIR/target/kibana-coverage/functional"
+fi
 
 if [[ "$failedConfigs" ]]; then
   buildkite-agent meta-data set "$FAILED_CONFIGS_KEY" "$failedConfigs"
