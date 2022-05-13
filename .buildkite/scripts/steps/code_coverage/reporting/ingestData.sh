@@ -36,13 +36,14 @@ echo "### debug BUFFER_SIZE: ${BUFFER_SIZE}"
 # Build team assignments file
 CI_STATS_DISABLED=true node scripts/generate_team_assignments.js --verbose --src '.github/CODEOWNERS' --dest $TEAM_ASSIGN_PATH
 
+empties=()
 emptyCheck() {
   echo "### Checking $1"
   echo $(head -5 $1) | grep -E -i "pct.+Unknown" >/dev/null
   lastCode=$?
   if [ $lastCode -eq 0 ]; then
     echo "--- Empty Summary File: $1"
-    exit 11
+    empties+=($1)
   fi
 }
 
@@ -55,6 +56,12 @@ for x in functional jest; do
   CI_STATS_DISABLED=true node scripts/ingest_coverage.js --path ${COVERAGE_SUMMARY_FILE} --vcsInfoPath ./VCS_INFO.txt --teamAssignmentsPath $TEAM_ASSIGN_PATH &
 done
 wait
+
+if [[ ${#empties[@]} -ge 2 ]]; then
+  echo "--- Empty count = ${#empties[@]}, fail the build"
+else
+  echo "--- Empty count < 2, dont fail the build"
+fi
 
 echo "###  Ingesting Code Coverage - Complete"
 echo ""
