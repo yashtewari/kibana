@@ -19,7 +19,7 @@ echo "--- Upload new git sha"
 .buildkite/scripts/steps/code_coverage/reporting/uploadPrevSha.sh
 
 .buildkite/scripts/bootstrap.sh
- 
+
 echo "--- Download coverage arctifacts"
 buildkite-agent artifact download target/kibana-coverage/jest/* .
 buildkite-agent artifact download target/kibana-coverage/functional/* .
@@ -52,4 +52,4 @@ echo "--- Upload coverage static site"
 .buildkite/scripts/steps/code_coverage/reporting/uploadStaticSite.sh
 
 echo "--- Ingest results to Kibana stats cluster"
-.buildkite/scripts/steps/code_coverage/reporting/ingestData.sh 'elastic+kibana+code-coverage' ${BUILDKITE_BUILD_NUMBER} ${BUILDKITE_BUILD_URL} ${previousSha} 'src/dev/code_coverage/ingest_coverage/team_assignment/team_assignments.txt'
+.buildkite/scripts/steps/code_coverage/reporting/ingestData.sh 'Elastic/kibana-code-coverage' ${BUILDKITE_BUILD_NUMBER} ${BUILDKITE_BUILD_URL} ${previousSha} 'src/dev/code_coverage/ingest_coverage/team_assignment/team_assignments.txt'
