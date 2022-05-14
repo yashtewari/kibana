@@ -97,6 +97,7 @@ if [[ -d "$KIBANA_DIR/target/kibana-coverage/functional" ]]; then
   echo "--- Merging code coverage for FTR Configs"
   NODE_OPTIONS=--max_old_space_size=16384 yarn nyc report \
     --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js --reporter json
+  echo "### ls -la target/kibana-coverage/functional/*.json: \n$(ls -la target/kibana-coverage/functional/*.json)"
   rm -rf target/kibana-coverage/functional/*
   mv target/kibana-coverage/functional-combined/coverage-final.json \
     "target/kibana-coverage/functional/$(date +%s)-coverage-final.json"
