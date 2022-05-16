@@ -42,6 +42,10 @@ echo "--- Functional: merging json files and generating the final combined repor
 #yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
 echo "### ls -la target/kibana-coverage/functional \n$(ls -la target/kibana-coverage/functional)"
 du -h target/kibana-coverage/functional
+for x in $(ls *-coverage-final.json); do
+  echo "### Uploading $x"
+  buildkite-agent artifact upload $x
+done
 
 # archive reports to upload as build artifacts
 #echo "--- Archive and upload combined reports"
