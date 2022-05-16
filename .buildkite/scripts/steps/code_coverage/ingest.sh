@@ -40,12 +40,38 @@ yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.jest.config.js
 
 echo "--- Functional: merging json files and generating the final combined report"
 #yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
-echo "### ls -la target/kibana-coverage/functional \n$(ls -la target/kibana-coverage/functional)"
-du -h target/kibana-coverage/functional
-for x in $(ls *-coverage-final.json); do
+for x in $(ls target/kibana-coverage/functional/*-coverage-final.json); do
   echo "### Uploading $x"
   buildkite-agent artifact upload $x
 done
+
+target=target/kibana-coverage/functional
+echo "### target contents:"
+ls -la $target
+echo "### target disk size"
+du -h $target
+
+first="target/kibana-coverage/first"
+
+splitMerge () {
+  count=$(ls $1 | wc -l | xargs) # xargs trims whitespace
+  echo "### total: $count"
+
+  mkdir $first
+  half=$(($count / 2))
+  echo "### half: $half"
+
+  for x in $(seq 1 $half); do
+    mv "$1/$(ls $1 | head -1)" $first
+  done
+}
+splitMerge $target
+echo "### first:"
+ls  $first
+echo "### rest"
+ls $target
+
+echo "### Now we can merge half of the files at a time"
 
 # archive reports to upload as build artifacts
 #echo "--- Archive and upload combined reports"

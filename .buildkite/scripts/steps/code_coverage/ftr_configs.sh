@@ -30,6 +30,9 @@ if [[ "$configs" == "" ]]; then
   configs=$(jq -r '.groups[env.JOB_NUM | tonumber].names | .[]' ftr_run_order.json)
 fi
 
+echo "### Configs"
+echo $configs
+
 failedConfigs=""
 results=()
 
