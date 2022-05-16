@@ -67,8 +67,15 @@ ls $target
 
 # merge the first half
 COVERAGE_TEMP_DIR=$first yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
+# TODO-TRE: Move the first file to the target/kibana-coverage/functional directory"
+#mv "${first}/*-coverage-final.json" $target
+echo "### is the final file from 'first' here:"
+echo "### ls target/kibana-coverage/functional-combined"
+ls target/kibana-coverage/functional-combined
 # merge the rest
 yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
+echo "### what is is 'target/kibana-coverage/functional-combined' now?"
+ls target/kibana-coverage/functional-combined
 
 # archive reports to upload as build artifacts
 #echo "--- Archive and upload combined reports"
