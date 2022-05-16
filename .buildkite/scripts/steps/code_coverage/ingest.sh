@@ -41,7 +41,7 @@ yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.jest.config.js
 echo "--- Functional: merging json files and generating the final combined report"
 #yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
 echo "### ls -la target/kibana-coverage/functional \n$(ls -la target/kibana-coverage/functional)"
-du -h ls -la target/kibana-coverage/functional
+du -h target/kibana-coverage/functional
 
 # archive reports to upload as build artifacts
 #echo "--- Archive and upload combined reports"
