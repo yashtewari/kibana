@@ -67,25 +67,18 @@ ls $target
 
 # merge the first half
 COVERAGE_TEMP_DIR=$first yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
-# TODO-TRE: Move the first file to the target/kibana-coverage/functional directory"
-#mv "${first}/*-coverage-final.json" $target
-echo "### is the final file from 'first' here:"
-echo "### ls target/kibana-coverage/functional-combined"
-ls target/kibana-coverage/functional-combined
 # merge the rest
 yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
-echo "### what is is 'target/kibana-coverage/functional-combined' now?"
-ls target/kibana-coverage/functional-combined
 
 # archive reports to upload as build artifacts
-#echo "--- Archive and upload combined reports"
-#tar -czf target/kibana-coverage/jest/kibana-jest-coverage.tar.gz target/kibana-coverage/jest-combined
-#tar -czf target/kibana-coverage/functional/kibana-functional-coverage.tar.gz target/kibana-coverage/functional-combined
-#buildkite-agent artifact upload 'target/kibana-coverage/jest/kibana-jest-coverage.tar.gz'
-#buildkite-agent artifact upload 'target/kibana-coverage/functional/kibana-functional-coverage.tar.gz'
-#
-#echo "--- Upload coverage static site"
-#.buildkite/scripts/steps/code_coverage/reporting/uploadStaticSite.sh
-#
-#echo "--- Ingest results to Kibana stats cluster"
-#.buildkite/scripts/steps/code_coverage/reporting/ingestData.sh 'Elastic/kibana-code-coverage' ${BUILDKITE_BUILD_NUMBER} ${BUILDKITE_BUILD_URL} ${previousSha} 'src/dev/code_coverage/ingest_coverage/team_assignment/team_assignments.txt'
+echo "--- Archive and upload combined reports"
+tar -czf target/kibana-coverage/jest/kibana-jest-coverage.tar.gz target/kibana-coverage/jest-combined
+tar -czf target/kibana-coverage/functional/kibana-functional-coverage.tar.gz target/kibana-coverage/functional-combined
+buildkite-agent artifact upload 'target/kibana-coverage/jest/kibana-jest-coverage.tar.gz'
+buildkite-agent artifact upload 'target/kibana-coverage/functional/kibana-functional-coverage.tar.gz'
+
+echo "--- Upload coverage static site"
+.buildkite/scripts/steps/code_coverage/reporting/uploadStaticSite.sh
+
+echo "--- Ingest results to Kibana stats cluster"
+.buildkite/scripts/steps/code_coverage/reporting/ingestData.sh 'Elastic/kibana-code-coverage' ${BUILDKITE_BUILD_NUMBER} ${BUILDKITE_BUILD_URL} ${previousSha} 'src/dev/code_coverage/ingest_coverage/team_assignment/team_assignments.txt'

@@ -27,9 +27,8 @@ configs="${FTR_CONFIG:-}"
 if [[ "$configs" == "" ]]; then
   echo "--- downloading ftr test run order"
   buildkite-agent artifact download ftr_run_order.json .
-  # TODO-TRE: Dont forget to enable all the configs, not just the first.
-#  configs=$(jq -r '.groups[env.JOB_NUM | tonumber].names | .[]' ftr_run_order.json)
-  configs=$(jq -r '.groups[env.JOB_NUM | tonumber].names | first' ftr_run_order.json)
+#  configs=$(jq -r '.groups[env.JOB_NUM | tonumber].names | first' ftr_run_order.json)
+  configs=$(jq -r '.groups[env.JOB_NUM | tonumber].names | .[]' ftr_run_order.json)
 fi
 
 echo "### Configs"
