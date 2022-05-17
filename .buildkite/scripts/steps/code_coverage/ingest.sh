@@ -33,10 +33,11 @@ echo "--- collect VCS Info"
 # replace path in json files and generate final reports
 echo "--- Replace path in json files"
 export COVERAGE_TEMP_DIR=$KIBANA_DIR/target/kibana-coverage
-sed -i "s|/opt/local-ssd/buildkite/builds/kb-[[:alnum:]\-]\{20,27\}/elastic/kibana-code-coverage-main/kibana|${KIBANA_DIR}|g" $COVERAGE_TEMP_DIR/**/*.json
+sed -i -e "s|/var/lib/buildkite-agent/builds/kb-n2-4-spot-2-[[:alnum:]\-]\{16\}/elastic/kibana-code-coverage-main/kibana|${KIBANA_DIR}|g" $COVERAGE_TEMP_DIR/*.json
 
-echo "--- Jest: merging coverage files and generating the final combined report"
-yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.jest.config.js
+
+#echo "--- Jest: merging coverage files and generating the final combined report"
+#yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.jest.config.js
 
 echo "--- Functional: merging json files and generating the final combined report"
 #yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
@@ -66,15 +67,18 @@ echo "### rest"
 ls $target
 
 # merge the first half
-COVERAGE_TEMP_DIR=$first yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
+firstCombined="${first}-combined"
+COVERAGE_TEMP_DIR=$first yarn nyc report --nycrc-path \
+  src/dev/code_coverage/nyc_config/nyc.functional.config.js --report-dir $firstCombined
+mv "${firstCombined}/*.json" $target
 # merge the rest
 yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
 
 # archive reports to upload as build artifacts
 echo "--- Archive and upload combined reports"
-tar -czf target/kibana-coverage/jest/kibana-jest-coverage.tar.gz target/kibana-coverage/jest-combined
+#tar -czf target/kibana-coverage/jest/kibana-jest-coverage.tar.gz target/kibana-coverage/jest-combined
 tar -czf target/kibana-coverage/functional/kibana-functional-coverage.tar.gz target/kibana-coverage/functional-combined
-buildkite-agent artifact upload 'target/kibana-coverage/jest/kibana-jest-coverage.tar.gz'
+#buildkite-agent artifact upload 'target/kibana-coverage/jest/kibana-jest-coverage.tar.gz'
 buildkite-agent artifact upload 'target/kibana-coverage/functional/kibana-functional-coverage.tar.gz'
 
 echo "--- Upload coverage static site"
