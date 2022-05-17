@@ -47,6 +47,13 @@ emptyCheck() {
   fi
 }
 
+if [[ ${#empties[@]} -ge 2 ]]; then
+  echo "--- Empty count = ${#empties[@]}, fail the build"
+  exit 11
+else
+  echo "### Empty count < 2, dont fail the build"
+fi
+
 for x in functional jest; do
   echo "### Ingesting coverage for ${x}"
   COVERAGE_SUMMARY_FILE=target/kibana-coverage/${x}-combined/coverage-summary.json
@@ -56,12 +63,6 @@ for x in functional jest; do
   CI_STATS_DISABLED=true node scripts/ingest_coverage.js --path ${COVERAGE_SUMMARY_FILE} --vcsInfoPath ./VCS_INFO.txt --teamAssignmentsPath $TEAM_ASSIGN_PATH &
 done
 wait
-
-if [[ ${#empties[@]} -ge 2 ]]; then
-  echo "--- Empty count = ${#empties[@]}, fail the build"
-else
-  echo "--- Empty count < 2, dont fail the build"
-fi
 
 echo "###  Ingesting Code Coverage - Complete"
 echo ""
