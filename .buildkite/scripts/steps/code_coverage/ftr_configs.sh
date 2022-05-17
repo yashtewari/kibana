@@ -15,7 +15,7 @@ NODE_OPTIONS=--max_old_space_size=14336 node scripts/build_kibana_platform_plugi
 is_test_execution_step
 
 export JOB_NUM=$BUILDKITE_PARALLEL_JOB
-export JOB=ftr-configs-0
+export JOB=ftr-configs-${JOB_NUM}
 
 FAILED_CONFIGS_KEY="${BUILDKITE_STEP_ID}${BUILDKITE_PARALLEL_JOB:-0}"
 
