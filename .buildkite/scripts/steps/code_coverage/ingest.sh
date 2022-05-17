@@ -30,10 +30,9 @@ echo "--- process HTML Links"
 echo "--- collect VCS Info"
 .buildkite/scripts/steps/code_coverage/reporting/collectVcsInfo.sh
 
-# replace path in json files and generate final reports
 echo "--- Replace path in json files"
 export COVERAGE_TEMP_DIR=$KIBANA_DIR/target/kibana-coverage
-sed -i -e "s|/var/lib/buildkite-agent/builds/kb-n2-4-spot-2-[[:alnum:]\-]\{16\}/elastic/kibana-code-coverage-main/kibana|${KIBANA_DIR}|g" $COVERAGE_TEMP_DIR/*.json
+sed -i -e "s|/var/lib/buildkite-agent/builds/kb-n2-4-spot-2-[[:alnum:]\-]\{16\}/elastic/kibana-code-coverage-main/kibana|${KIBANA_DIR}|g" $COVERAGE_TEMP_DIR/**/*.json
 
 echo "--- Jest: merging coverage files and generating the final combined report"
 yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.jest.config.js
