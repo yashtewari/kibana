@@ -9,7 +9,5 @@ is_test_execution_step
 .buildkite/scripts/bootstrap.sh
 
 echo '--- Jest Integration code coverage'
-checks-reporter-with-killswitch "Jest Integration Tests $((BUILDKITE_PARALLEL_JOB+1))" \
-  .buildkite/scripts/steps/test/jest_parallel.sh jest.integration.config.js
-
-
+node --max-old-space-size=14336 scripts/jest_integration  --ci --coverage --coverageReporters json || true
+mv target/kibana-coverage/jest/coverage-final.json "target/kibana-coverage/jest/jest-integration-coverage.json"
