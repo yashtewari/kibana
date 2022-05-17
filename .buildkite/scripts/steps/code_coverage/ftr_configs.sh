@@ -108,7 +108,7 @@ else
   echo "--- Code coverage not found in: $KIBANA_DIR/target/kibana-coverage/functional"
 fi
 
-printf "### ls -la target/kibana-coverage/functional: \n$(ls -la target/kibana-coverage/functional)"
+printf "### ls -la target/kibana-coverage/functional: \n$(ls -la target/kibana-coverage/functional)\n"
 
 if [[ "$failedConfigs" ]]; then
   buildkite-agent meta-data set "$FAILED_CONFIGS_KEY" "$failedConfigs"
