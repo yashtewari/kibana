@@ -30,9 +30,11 @@ echo "--- process HTML Links"
 echo "--- collect VCS Info"
 .buildkite/scripts/steps/code_coverage/reporting/collectVcsInfo.sh
 
-echo "--- Replace path in json files"
+echo "--- Replace path in coverage json files"
 export COVERAGE_TEMP_DIR=$KIBANA_DIR/target/kibana-coverage
-sed -i -e "s|/var/lib/buildkite-agent/builds/kb-n2-4-spot-2-[[:alnum:]\-]\{16\}/elastic/kibana-code-coverage-main/kibana|${KIBANA_DIR}|g" $COVERAGE_TEMP_DIR/**/*.json
+#sed -i -e "s|/var/lib/buildkite-agent/builds/kb-n2-4-spot-2-[[:alnum:]\-]\{16\}/elastic/kibana-code-coverage-main/kibana|${KIBANA_DIR}|g" $COVERAGE_TEMP_DIR/**/*.json
+sed -i -E "s|\/var\/lib\/buildkite-agent\/builds\/kb-n2-4-spot-2-[[:alnum:]\-]*\/elastic\/kibana-code-coverage-main\/kibana|${KIBANA_DIR}|g" \
+  $COVERAGE_TEMP_DIR/*.json
 
 echo "--- Jest: merging coverage files and generating the final combined report"
 yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.jest.config.js
@@ -56,6 +58,8 @@ splitMerge () {
     mv "$1/$(ls $1 | head -1)" $first
   done
 }
+
+echo "--- Running split merge of coverage files"
 splitMerge $target
 echo "### first:"
 ls  $first
@@ -66,7 +70,8 @@ ls $target
 firstCombined="${first}-combined"
 COVERAGE_TEMP_DIR=$first yarn nyc report --nycrc-path \
   src/dev/code_coverage/nyc_config/nyc.functional.config.js --report-dir $firstCombined
-mv "${firstCombined}/*.json" $target
+mv "${firstCombined}/*.json" $target || echo "--- No coverage files found at ${firstCombined}/*.json"
+printf "### ls -R ${firstCombined}: \n$(ls -R ${firstCombined})\n"
 # merge the rest
 yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
 
@@ -81,4 +86,6 @@ echo "--- Upload coverage static site"
 .buildkite/scripts/steps/code_coverage/reporting/uploadStaticSite.sh
 
 echo "--- Ingest results to Kibana stats cluster"
-.buildkite/scripts/steps/code_coverage/reporting/ingestData.sh 'Elastic/kibana-code-coverage' ${BUILDKITE_BUILD_NUMBER} ${BUILDKITE_BUILD_URL} ${previousSha} 'src/dev/code_coverage/ingest_coverage/team_assignment/team_assignments.txt'
+.buildkite/scripts/steps/code_coverage/reporting/ingestData.sh 'Elastic/kibana-code-coverage' \
+  ${BUILDKITE_BUILD_NUMBER} ${BUILDKITE_BUILD_URL} ${previousSha} \
+  'src/dev/code_coverage/ingest_coverage/team_assignment/team_assignments.txt'
