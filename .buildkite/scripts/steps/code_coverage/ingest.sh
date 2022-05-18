@@ -68,7 +68,6 @@ firstCombined="${first}-combined"
 COVERAGE_TEMP_DIR=$first yarn nyc report --nycrc-path \
   src/dev/code_coverage/nyc_config/nyc.functional.config.js --report-dir $firstCombined
 mv "${firstCombined}/*.json" $target || echo "--- No coverage files found at ${firstCombined}/*.json"
-printf "### ls -R ${firstCombined}: \n$(ls -R ${firstCombined})\n"
 # merge the rest
 yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.functional.config.js
 
