@@ -32,6 +32,7 @@ echo "--- collect VCS Info"
 
 echo "--- Replace path in coverage json files"
 export COVERAGE_TEMP_DIR=$KIBANA_DIR/target/kibana-coverage
+printf "### ls -R ${COVERAGE_TEMP_DIR}: \n$(ls -R ${COVERAGE_TEMP_DIR})\n"
 #sed -i -e "s|/var/lib/buildkite-agent/builds/kb-n2-4-spot-2-[[:alnum:]\-]\{16\}/elastic/kibana-code-coverage-main/kibana|${KIBANA_DIR}|g" $COVERAGE_TEMP_DIR/**/*.json
 sed -ie "s|\/var\/lib\/buildkite-agent\/builds\/kb-n2-4-spot-2-[[:alnum:]\-]*\/elastic\/kibana-code-coverage-main\/kibana|${KIBANA_DIR}|g" \
   $COVERAGE_TEMP_DIR/**/*.json
