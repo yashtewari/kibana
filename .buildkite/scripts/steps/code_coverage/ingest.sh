@@ -42,10 +42,6 @@ yarn nyc report --nycrc-path src/dev/code_coverage/nyc_config/nyc.jest.config.js
 
 echo "--- Functional: merging json files and generating the final combined report"
 target=target/kibana-coverage/functional
-echo "### target contents:"
-ls -la $target
-echo "### target disk size"
-du -h $target
 first="target/kibana-coverage/first"
 splitMerge () {
   count=$(ls $1 | wc -l | xargs) # xargs trims whitespace
